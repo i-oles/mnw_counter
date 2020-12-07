@@ -2,6 +2,12 @@ import re
 import os
 from string_operations import *
 
+'''
+1. getting into dir, and filter all files with (1) positional number.
+2. spliting strings -> some files could have two objects separated by coma in one string
+3. slicing filenames -> cutting everything after mnw (included)
+4. 
+'''
 
 
 DIRECTORY = ''
@@ -12,11 +18,8 @@ all_first_files = []
 
 for subdir, dirs, files in os.walk(directory):
     all_first_files = [filter_first_files(file) for file in files]
-
-# spliting filenames which include two object names
+    
 splited_files = [split_duet(filename, COMPONENT) for filename in all_first_files]
-
-# slicing files to receive only prefix and digit (with possibly letters and _ after digit)
 ones_without_mnw = list(cut_char(obj, COMPONENT) for obj in splited_files)
 
 # removing all duplicates
@@ -24,7 +27,6 @@ unique_ones = list(set(ones_without_mnw))
 
 # removing objects sets - leave only single objects
 only_singles = list(cut_char(obj, CHAR) for obj in unique_ones)
-
 objects_zipped = zip(only_singles, unique_ones)
 objects_dict = dict(objects_zipped)
 
