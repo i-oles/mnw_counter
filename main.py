@@ -1,59 +1,50 @@
-import re
 import os
-from string_operations import *
+from string_operations import filter_first_files, split_duets, cut_char, display
 
-'''
-1. getting into dir, and filter all files with (1) positional number.
-2. spliting strings -> some files could have two objects separated by coma in one string
-3. slicing filenames -> cutting everything after 'mnw' (included)
-4. making set to remove all duplicates
-'''
 
-DIRECTORY = ''
-FILE_EXTENTION = 'jpg'
+DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
+# DIRECTORY = 'C:\\Users\\ioles\\Pictures\\DO ZROBIENIA'
+# DIRECTORY = 'R:\\p2-ogolna\\rozdzielnia'
 COMPONENT = 'mnw'
+F_EXT = 'tiff'
 CHAR = '-'
-all_first_files = []
+SEARCH_01 = f'.*\(0?1\)\.{F_EXT}?$'
+ones_all = []
 
 
-for subdir, dirs, files in os.walk(directory):
-    all_first_files = [filter_first_files(file) for file in files]
-    
-splited_files = [split_duet(filename, COMPONENT) for filename in all_first_files]
-ones_without_mnw = list(cut_char(obj, COMPONENT) for obj in splited_files)
-unique_ones = list(set(ones_without_mnw))
+for subdir, dirs, files in os.walk(DIRECTORY):
+    ones_all = [filter_first_files(file, SEARCH_01) for file in files]
 
-# removing objects sets - leave only single objects
-only_singles = list(cut_char(obj, CHAR) for obj in unique_ones)
-objects_zipped = zip(only_singles, unique_ones)
-objects_dict = dict(objects_zipped)
+ones_splited = [split_duets(filename, COMPONENT) for filename in ones_all]
+ones_without_mnw = [cut_char(obj, COMPONENT) for obj in ones_splited]
+ones_unique = list(set(ones_without_mnw))
+ones_short = [cut_char(obj, CHAR) for obj in ones_unique]
+ones_zipped = zip(ones_short, ones_unique)
+ones_dict = dict(ones_zipped)
+singles_short = list(set(ones_short))
 
-only_singles = list(set(only_singles))
+ones_dict_keys = ones_dict.keys()
+singles_long = []
+sets_long = ones_unique
+for obj in ones_short:
+    if obj in ones_dict_keys:
+        singles_long.append(ones_dict[obj])
+        sets_long.remove(ones_dict[obj])
 
-singles = []
-obj_sets = unique_ones
-
-objects_dict_keys = objects_dict.keys()
-for obj in only_singles:
-    if obj in objects_dict_keys:
-        singles.append(objects_dict[obj])
-        obj_sets.remove(objects_dict[obj])
-
-singles = filter()
-
-counter_sets = len(obj_sets)
-counter_singles = len(singles)
+display(ones_all)
 
 
-[print(o) for o in singles]
+"""
+counter_singles = len(singles_long)
+[print(o) for o in singles_long]
 print(f'photographed objects: {counter_singles}')
+
 print('*****************************')
 
-[print(s) for s in obj_sets]
+counter_sets = len(sets_long)
+[print(s) for s in sets_long]
 print(f'photographed sets: {counter_sets}')
-
-
-
+"""
 
 if __name__ == '__main__':
     pass
