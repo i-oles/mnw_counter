@@ -1,15 +1,14 @@
 import re
-from main import FILE_EXTENTION
-from configurations import *
 
 
-def filter_first_files(file):
-    first_file = re.findall(r'.*\(0?1\)\.{}?$'.format(FILE_EXTENTION), file)
+def filter_first_files(file, regex_query):
+    first_file = re.findall(r'{0}'.format(regex_query), file)
     if first_file:
         return file
 
 
 def split_duets(filename, component):
+    filename = str(filename)
     counter = filename.count(component)
     if counter > 1:
         splited_file = filename.split(',')
@@ -22,10 +21,10 @@ def cut_char(obj, char):
     if char in obj:
         char_index = obj.find(char)
         part_before_char = obj[:char_index]
-        yield part_before_char
+        return part_before_char
     else:
-        yield obj
+        return obj
 
 
-def
-
+def display(some_list):
+    [print(x) for x in some_list]
