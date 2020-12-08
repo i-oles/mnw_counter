@@ -1,19 +1,23 @@
 import os
+import re
 from string_operations import filter_first_files, split_duets, cut_char, display
 
 
 DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
-# DIRECTORY = 'C:\\Users\\ioles\\Pictures\\DO ZROBIENIA'
-# DIRECTORY = 'R:\\p2-ogolna\\rozdzielnia'
+DIRECTORY = '/Volumes/MNW_OLES/jpg_mnw'
+
 COMPONENT = 'mnw'
-F_EXT = 'tiff'
+F_EXT = 'jpg'
 CHAR = '-'
 SEARCH_01 = f'.*\(0?1\)\.{F_EXT}?$'
 ones_all = []
 
 
 for subdir, dirs, files in os.walk(DIRECTORY):
-    ones_all = [filter_first_files(file, SEARCH_01) for file in files]
+    for file in files:
+        first_file = re.findall(r'{}'.format(SEARCH_01), file)
+        if first_file:
+            ones_all.append(file)
 
 ones_splited = [split_duets(filename, COMPONENT) for filename in ones_all]
 ones_without_mnw = [cut_char(obj, COMPONENT) for obj in ones_splited]
@@ -26,12 +30,21 @@ singles_short = list(set(ones_short))
 ones_dict_keys = ones_dict.keys()
 singles_long = []
 sets_long = ones_unique
+
 for obj in ones_short:
     if obj in ones_dict_keys:
         singles_long.append(ones_dict[obj])
-        sets_long.remove(ones_dict[obj])
+        #sets_long.remove(ones_dict[obj])
 
 display(ones_all)
+display(ones_splited)
+display(ones_without_mnw)
+display(ones_unique)
+display(ones_short)
+display(ones_dict)
+display(singles_short)
+display(singles_long)
+
 
 
 """
