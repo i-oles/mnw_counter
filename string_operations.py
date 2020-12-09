@@ -1,22 +1,12 @@
 import re
 
 
-def filter_first_files(file, regex_formula):
-    file = str(file)
-    first_file = re.findall(r'.*\(0?1\)\.jpg?$', file)
-    if first_file:
-        return file
-
-
-def split_duets(filename, component):
-    filename = str(filename)
-    counter = filename.count(component)
+def split_duets(filename):
+    counter = filename.count('mnw')
     if counter > 1:
         splited_file = filename.split(',')
         for part in splited_file:
             return part
-    else:
-        return filename
 
 
 def cut_char(obj, char):
@@ -32,4 +22,5 @@ def cut_char(obj, char):
 
 def display(some_list):
     counter = len(some_list)
+    #[print(i) for i in some_list]
     print(f"some list: {counter} objects.")
