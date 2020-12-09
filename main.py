@@ -1,13 +1,13 @@
 import os
 import re
-from string_operations import filter_first_files, split_duets, cut_char, display
-
+from string_operations import split_duets, cut_char, display
+from itertools import chain
 
 DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
-DIRECTORY = '/Volumes/MNW_OLES/jpg_mnw'
+#DIRECTORY = '/Volumes/MNW_OLES/jpg_mnw'
 
 COMPONENT = 'mnw'
-F_EXT = 'jpg'
+F_EXT = 'tiff'
 CHAR = '-'
 SEARCH_01 = f'.*\(0?1\)\.{F_EXT}?$'
 ones_all = []
@@ -19,7 +19,8 @@ for subdir, dirs, files in os.walk(DIRECTORY):
         if first_file:
             ones_all.append(file)
 
-ones_splited = [split_duets(filename, COMPONENT) for filename in ones_all]
+ones_duets = filter(split_duets, ones_all)
+"""
 ones_without_mnw = [cut_char(obj, COMPONENT) for obj in ones_splited]
 ones_unique = list(set(ones_without_mnw))
 ones_short = [cut_char(obj, CHAR) for obj in ones_unique]
@@ -42,8 +43,11 @@ display(ones_without_mnw)
 display(ones_unique)
 display(ones_short)
 display(ones_dict)
-display(singles_short)
 display(singles_long)
+display(sets_long)
+"""
+[print(i) for i in ones_duets]
+
 
 
 
@@ -51,9 +55,7 @@ display(singles_long)
 counter_singles = len(singles_long)
 [print(o) for o in singles_long]
 print(f'photographed objects: {counter_singles}')
-
 print('*****************************')
-
 counter_sets = len(sets_long)
 [print(s) for s in sets_long]
 print(f'photographed sets: {counter_sets}')
