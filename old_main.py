@@ -75,22 +75,23 @@ objects_dict = dict(objects_zipped)
 only_singles = list(set(only_singles))
 
 singles = []
-obj_sets = unique_ones
+#obj_sets = unique_ones
 
 objects_dict_keys = objects_dict.keys()
 for obj in only_singles:
     if obj in objects_dict_keys:
         singles.append(objects_dict[obj])
-        obj_sets.remove(objects_dict[obj])
+        #obj_sets.remove(objects_dict[obj])
 
 
 display(all_ones_list)
-display(splited_duet_files)
+display(rest_ones)
 display(ones_without_mnw)
 display(unique_ones)
+display(objects_dict)
 display(only_singles)
 display(singles)
-display(obj_sets)
+#display(obj_sets)
 
 
 
