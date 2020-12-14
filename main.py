@@ -1,13 +1,13 @@
 import os
 import re
 from string_operations import split_duets, cut_char, display
-from itertools import chain
 
-#DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
-DIRECTORY = '/Volumes/MNW_OLES/jpg_mnw'
+
+DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
+#DIRECTORY = '/Volumes/MNW_OLES/jpg_mnw'
 
 COMPONENT = 'mnw'
-F_EXT = 'jpg'
+F_EXT = 'tiff'
 CHAR_H = '-'
 CHAR_C = ','
 SEARCH_01 = f'.*\(0?1\)\.{F_EXT}?$'
@@ -30,33 +30,14 @@ singles_short = list(set(ones_short))
 ones_dict_keys = ones_dict.keys()
 
 singles_long = []
-sets_long = ones_unique
-
-for obj in ones_short:
+sets_long = ones_unique.copy()
+for obj in singles_short:
     if obj in ones_dict_keys:
         singles_long.append(ones_dict[obj])
         sets_long.remove(ones_dict[obj])
 
+display(singles_long, sets_long)
 
-display(ones_all)
-display(ones_splited)
-display(ones_without_mnw)
-display(ones_unique)
-display(ones_short)
-display(ones_dict)
-display(singles_long)
-display(sets_long)
-
-
-
-counter_singles = len(singles_long)
-[print(o) for o in singles_long]
-print(f'photographed objects: {counter_singles}')
-print('*****************************')
-counter_sets = len(sets_long)
-[print(s) for s in sets_long]
-print(f'photographed sets: {counter_sets}')
-"""
 
 if __name__ == '__main__':
     pass
