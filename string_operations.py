@@ -25,9 +25,12 @@ def cut_char(obj, char):
         return obj
 
 
-def display(some_list):
-    counter = len(some_list)
-    #print(some_list)
-    #[print(i) for i in some_list]
-    #print(type(some_list))
-    print(f"some list: {counter} objects.")
+def display(single_obj_list, set_obj_list):
+    c_single = len(single_obj_list)
+    c_set = len(set_obj_list)
+    [print(obj) for obj in single_obj_list]
+    print(f"Photographed single objects: {c_single}")
+    print("***************************************")
+    [print(obj) for obj in set_obj_list]
+    print(f"Photographed sets of objects: {c_set} \n"
+          f"(sets does not counts, because they have been already counted in single objects)")
