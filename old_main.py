@@ -1,6 +1,6 @@
 import re
 import os
-from string_operations import display
+from string_operations_old import display
 
 # *********** KOLEKCJE SKONCZONE ************
 directory = 'R:\\p2-ogolna\\kolekcje_skonczone'
@@ -19,7 +19,7 @@ directory = '/Volumes/MNW_OLES/jpg_mnw'
 # file_list = os.walk(directory)
 
 # 1. funkcyjki ktore operuja na liscie plikow w katalogu dajesz do nowego pliczku, potem mozna to ladnie otestowac (funkcja dostaje liste plikow i zwraca liste plikow)
-# 2. main.py to w zasadzie:
+# 2. main_func.py to w zasadzie:
     # walk(dir)
 
 all_ones_list = []

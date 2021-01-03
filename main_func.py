@@ -1,6 +1,6 @@
 import os
 import re
-from string_operations import split_duets, cut_char, display
+from string_operations_old import split_duets, cut_char, display
 
 
 DIRECTORY = 'R:\\p2-ogolna\\kolekcje_skonczone'
