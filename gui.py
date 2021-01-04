@@ -1,9 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
-from string_operations import StringOperations
+from string_operations_new import StringOperations
 import os
 import re
 import sys
+from datetime import date
 import time
 
 class Ui_MainWindow(object):
@@ -13,6 +14,9 @@ class Ui_MainWindow(object):
         self.char_1 = ','
         self.char_2 = '-'
         self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
+
+        self.current_date = date.today()
+        self.current_date.strftime("%d-%m-%Y")
 
         self.logo = 'app_logo.jpg'
 
@@ -33,7 +37,7 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 2)
         self.btnBrowse = QtWidgets.QToolButton(self.centralwidget)
-        self.btnBrowse.setMaximumSize(QtCore.QSize(30, 21))
+        self.btnBrowse.setMaximumSize(QtCore.QSize(50, 50))
         self.btnBrowse.setObjectName("btnBrowse")
         self.btnBrowse.clicked.connect(self.browse_dir)
         self.gridLayout.addWidget(self.btnBrowse, 1, 2, 1, 1)
@@ -84,8 +88,8 @@ class Ui_MainWindow(object):
         self.labelListSets.setObjectName("labelListSets")
         self.gridLayout.addWidget(self.labelListSets, 9, 0, 1, 1)
         self.listWidgetSets = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidgetSets.setMinimumSize(QtCore.QSize(0, 100))
-        self.listWidgetSets.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.listWidgetSets.setMinimumSize(QtCore.QSize(0, 160))
+        self.listWidgetSets.setMaximumSize(QtCore.QSize(16777215, 160))
         self.listWidgetSets.setObjectName("listWidgetSets")
         self.gridLayout.addWidget(self.listWidgetSets, 9, 1, 1, 2)
 
@@ -110,6 +114,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
 
+        self.menuFile.triggered.connect(self.save_to_file)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -132,6 +138,28 @@ class Ui_MainWindow(object):
         self.aboutCounter.setText(_translate("MainWindow", "About counter"))
         self.aboutCounter.setStatusTip(_translate("MainWindow", "All information about program"))
         self.aboutCounter.setShortcut(_translate("MainWindow", "F1"))
+
+    def save_to_file(self):
+        dir_name = 'raporty_dzienne'
+        if not os.path.exists(f'{self.directory}/{dir_name}'):
+            os.mkdir(f'{self.directory}/{dir_name}')
+
+        def list_format(some_list):
+            return [(x + '\n') for x in some_list]
+
+        result_file = open(r'{}/{}/{}.txt'.format(self.directory, dir_name, self.current_date), 'w')
+        date_line = f'Date: {self.current_date} \n \n'
+        counter_line = f'You photographed {self.count_result} objects. \n \n'
+        label_singles = f'{self.labelPhotographed.text()} \n'
+        label_sets = f'{self.labelListSets.text()} \n'
+        result_file.write(date_line)
+        result_file.write(counter_line)
+        result_file.write(label_singles)
+        result_file.writelines(list_format(self.singles_long))
+        result_file.write('\n\n')
+        result_file.write(label_sets)
+        result_file.writelines(list_format(self.sets_long))
+        result_file.close()
 
     def browse_dir(self):
         self.directory = str(QtWidgets.QFileDialog.getExistingDirectory())
@@ -216,8 +244,6 @@ class Ui_MainWindow(object):
     def list_display(self, list, widget):
         for num, item in enumerate(list):
             widget.insertItem(num, item)
-
-
 
 
 if __name__ == "__main__":
