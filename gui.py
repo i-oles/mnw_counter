@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QCompleter
 from string_operations_new import StringOperations
 import os
 import re
@@ -9,11 +9,12 @@ import time
 
 class Ui_MainWindow(object):
     def __init__(self):
-        self.file_ext = 'jpg'
+        self.file_ext = 'tiff'
         self.component = 'mnw'
         self.char_1 = ','
         self.char_2 = '-'
         self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
+        self.report_dir = 'Daily_Reports'
 
         self.current_date = date.today()
         self.current_date.strftime("%d-%m-%Y")
@@ -58,6 +59,7 @@ class Ui_MainWindow(object):
         self.btnCount.clicked.connect(self.verify_lineEdit)
         self.btnCount.clicked.connect(self.verify_empty_widets)
         self.btnCount.clicked.connect(self.count_objects)
+        self.btnCount.clicked.connect(self.save_disabled)
 
         self.gridLayout.addWidget(self.btnCount, 4, 0, 1, 3)
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
@@ -107,14 +109,17 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.exportResults = QtWidgets.QAction(MainWindow)
         self.exportResults.setObjectName("exportResults")
+        self.exportResults.setDisabled(True)
+
+        self.menuFile.triggered.connect(self.save_to_file)
+        self.menuFile.triggered.connect(lambda: self.show_popup('Info', f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
+
         self.aboutCounter = QtWidgets.QAction(MainWindow)
         self.aboutCounter.setObjectName("aboutCounter")
         self.menuFile.addAction(self.exportResults)
         self.menuAbout.addAction(self.aboutCounter)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
-
-        self.menuFile.triggered.connect(self.save_to_file)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -139,27 +144,6 @@ class Ui_MainWindow(object):
         self.aboutCounter.setStatusTip(_translate("MainWindow", "All information about program"))
         self.aboutCounter.setShortcut(_translate("MainWindow", "F1"))
 
-    def save_to_file(self):
-        dir_name = 'raporty_dzienne'
-        if not os.path.exists(f'{self.directory}/{dir_name}'):
-            os.mkdir(f'{self.directory}/{dir_name}')
-
-        def list_format(some_list):
-            return [(x + '\n') for x in some_list]
-
-        result_file = open(r'{}/{}/{}.txt'.format(self.directory, dir_name, self.current_date), 'w')
-        date_line = f'Date: {self.current_date} \n \n'
-        counter_line = f'You photographed {self.count_result} objects. \n \n'
-        label_singles = f'{self.labelPhotographed.text()} \n'
-        label_sets = f'{self.labelListSets.text()} \n'
-        result_file.write(date_line)
-        result_file.write(counter_line)
-        result_file.write(label_singles)
-        result_file.writelines(list_format(self.singles_long))
-        result_file.write('\n\n')
-        result_file.write(label_sets)
-        result_file.writelines(list_format(self.sets_long))
-        result_file.close()
 
     def browse_dir(self):
         self.directory = str(QtWidgets.QFileDialog.getExistingDirectory())
@@ -168,6 +152,10 @@ class Ui_MainWindow(object):
     def btn_disabled(self):
         if len(self.lineEdit.text()) > 0:
             self.btnCount.setDisabled(False)
+
+    def save_disabled(self):
+        if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
+            self.exportResults.setDisabled(False)
 
     def clear_before_count(self):
         self.progressBar.setValue(0)
@@ -234,7 +222,6 @@ class Ui_MainWindow(object):
                 self.sets_long.remove(ones_dict[item])
         self.singles_long = sorted(self.singles_long)
         self.sets_long = sorted(self.sets_long)
-        # add remember settings
 
     def counting_progress(self):
         for percent in range(101):
@@ -244,6 +231,28 @@ class Ui_MainWindow(object):
     def list_display(self, list, widget):
         for num, item in enumerate(list):
             widget.insertItem(num, item)
+
+    def save_to_file(self):
+        if not os.path.exists(f'{self.directory}/{self.report_dir}'):
+            os.mkdir(f'{self.directory}/{self.report_dir}')
+
+        def list_format(some_list):
+            return [(x + '\n') for x in some_list]
+
+        result_file = open(r'{}/{}/{}.txt'.format(self.directory, self.report_dir, self.current_date), 'w')
+        date_line = f'Date: {self.current_date} \n \n'
+        counter_line = f'You photographed {self.count_result} objects. \n \n'
+        label_singles = f'{self.labelPhotographed.text()} \n'
+        label_sets = f'{self.labelListSets.text()} \n'
+        result_file.write(date_line)
+        result_file.write(counter_line)
+        result_file.write(label_singles)
+        result_file.writelines(list_format(self.singles_long))
+        result_file.write('\n\n')
+        if not self.listWidgetSets.count() == 0:
+            result_file.write(label_sets)
+            result_file.writelines(list_format(self.sets_long))
+        result_file.close()
 
 
 if __name__ == "__main__":
