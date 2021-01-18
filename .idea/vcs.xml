@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/openmp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/openmp/build/tesseract" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/openmp/build/tesseract/tesseract" vcs="Git" />
   </component>
 </project>
