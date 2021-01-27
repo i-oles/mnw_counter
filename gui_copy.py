@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from string_operations import StringOperations
+from about_widget import Ui_widget
 import os
 import re
 import sys
@@ -116,6 +117,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
 
+        self.aboutCounter.triggered.connect(lambda: Ui_widget.setupUi(self, QtWidgets.QWidget()))
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -159,7 +162,6 @@ class Ui_MainWindow(object):
 
     def count_btn_clicked(self):
         self.clear_widgets_after_clicked()
-        self.verify_lineEdit()
 
         if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
             self.show_popup('Info', 'Please choose one of the following display options')
@@ -173,6 +175,8 @@ class Ui_MainWindow(object):
             if self.cBoxList.isChecked():
                 self.list_display(self.singles_long, self.listWidgetSingles)
                 self.list_display(self.sets_long, self.listWidgetSets)
+
+        self.verify_lineEdit()
         self.save_as_disabled()
 
     def verify_lineEdit(self):
@@ -246,6 +250,8 @@ class Ui_MainWindow(object):
             result_file.writelines(list_format(self.sets_long))
         result_file.close()
 
+#todo popup position
+#todo double click path problem
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

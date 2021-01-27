@@ -1,16 +1,18 @@
-from gui import MNW_gui
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from string_operations import StringOperations
+from gui import Ui_MainWindow
+from about_widget import Ui_widget
 import os
 import re
 import sys
 from datetime import date
 
-class Ui_MainWindow(MNW_gui, QMainWindow):
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
+    def __init__(self):
+        super(IzzyCounterWindow, self).__init__()
         self.setupUi(self)
+        self.show()
 
         self.file_ext = 'jpg'
         self.component = 'mnw'
@@ -24,10 +26,13 @@ class Ui_MainWindow(MNW_gui, QMainWindow):
 
         self.logo = 'app_logo.jpg'
 
+        self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
         self.btnBrowse.clicked.connect(self.browse_dir)
+        self.btnCount.setDisabled(True)
         self.btnCount.clicked.connect(self.count_btn_clicked)
         self.lineEdit.textChanged.connect(self.btn_count_disabled)
 
+        self.exportResults.setDisabled(True)
         self.menuFile.triggered.connect(self.save_to_file)
         self.menuFile.triggered.connect(lambda: self.show_popup('Info',
                                                                 f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
@@ -139,11 +144,16 @@ class Ui_MainWindow(MNW_gui, QMainWindow):
             result_file.writelines(list_format(self.sets_long))
         result_file.close()
 
+class Ui_AboutWindow(Ui_widget, QMainWindow):
+    def __init__(self):
+        super(Ui_AboutWindow, self).__init__()
+        self.setupUi(self)
+        self.show()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui = IzzyCounterWindow()
+    aw = Ui_AboutWindow()
     sys.exit(app.exec_())
