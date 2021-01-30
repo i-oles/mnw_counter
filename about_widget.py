@@ -275,7 +275,7 @@ class Ui_widget(object):
 
     def retranslateUi(self, widget):
         _translate = QtCore.QCoreApplication.translate
-        widget.setWindowTitle(_translate("widget", "Form"))
+        widget.setWindowTitle(_translate("widget", "About IzzyCounter"))
         self.label.setText(_translate("widget", "Program will only walk through files which meet following conditions:"))
         self.label_2.setText(_translate("widget", "- extension of files has to be ‘tiff’ or ‘tif’"))
         self.label_3.setText(_translate("widget", "- there is no ‘space’ in filenames"))
@@ -328,3 +328,13 @@ class Ui_widget(object):
         self.label_49.setText(_translate("widget", "aaa123_1-2mnw(1).tiff"))
         self.label_51.setText(_translate("widget", "About IzzyCounter:"))
         self.label_52.setText(_translate("widget", "szm222mnw(1).tiff"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    widget = QtWidgets.QWidget()
+    ui = Ui_widget()
+    ui.setupUi(widget)
+    widget.show()
+    sys.exit(app.exec_())

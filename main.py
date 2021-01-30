@@ -8,6 +8,7 @@ import re
 import sys
 from datetime import date
 
+
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
         super(IzzyCounterWindow, self).__init__()
@@ -34,8 +35,17 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
         self.exportResults.setDisabled(True)
         self.menuFile.triggered.connect(self.save_to_file)
+
+        self.menuAbout.triggered.connect(lambda: self.show_about_widget())
         self.menuFile.triggered.connect(lambda: self.show_popup('Info',
                                                                 f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
+
+    def show_about_widget(self):
+        aw = Ui_AboutWindow()
+        widget.addWidget(aw)
+        widget.resize(814, 764)
+        widget.setCurrentIndex(widget.currentIndex()+1)
+        if app.aboutToQuit.c
 
     def btn_count_disabled(self):
         if len(self.lineEdit.text()) > 0:
@@ -144,16 +154,20 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             result_file.writelines(list_format(self.sets_long))
         result_file.close()
 
+
 class Ui_AboutWindow(Ui_widget, QMainWindow):
     def __init__(self):
         super(Ui_AboutWindow, self).__init__()
         self.setupUi(self)
         self.show()
-
+        
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    widget = QtWidgets.QStackedWidget()
     MainWindow = QtWidgets.QMainWindow()
     ui = IzzyCounterWindow()
-    aw = Ui_AboutWindow()
+    widget.addWidget(ui)
+    widget.resize(365, 658)
+    widget.show()
     sys.exit(app.exec_())
