@@ -1,5 +1,6 @@
-import unittest
+#import unittest
 #from main import IzzyCounterWindow
+import os
 
 """
 class TestMakeLists(unittest.TestCase):
@@ -16,7 +17,7 @@ class TestMakeLists(unittest.TestCase):
 
         self.assertEqual(IzzyCounterWindow.make_singles_and_set_list(self.files_for_test, self.result_single))
 
-"""
+
 
 class TestSum(unittest.TestCase):
 
@@ -28,3 +29,13 @@ class TestSum(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+"""
+
+dir = '/Users/ioles/Desktop/'
+
+if os.path.isfile(dir):
+    print('')
+
+if __name__ == '__main__':
+    pass

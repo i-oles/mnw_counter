@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
+from PyQt5.QtCore import pyqtSignal
 from string_operations import StringOperations
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
@@ -8,6 +9,7 @@ import re
 import sys
 from datetime import date
 
+# todo: add two checkboxes to gui --> jpg and tiff(default)
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -40,12 +42,13 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.menuFile.triggered.connect(lambda: self.show_popup('Info',
                                                                 f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
 
+
     def show_about_widget(self):
         aw = Ui_AboutWindow()
         widget.addWidget(aw)
-        widget.resize(814, 764)
+        widget.setWindowTitle("About IzzyCounter")
+        widget.resize(814, 780)
         widget.setCurrentIndex(widget.currentIndex()+1)
-        if app.aboutToQuit.c
 
     def btn_count_disabled(self):
         if len(self.lineEdit.text()) > 0:
@@ -67,6 +70,10 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
     def count_btn_clicked(self):
         self.clear_widgets_after_clicked()
+
+        # todo: all_conditions_ok = pyqtSignal()
+        # todo: add while loops to lineedit, checkboxes etc. purpose: not to remember results.
+
         self.verify_lineEdit()
 
         if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
@@ -86,6 +93,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def verify_lineEdit(self):
         if len(self.lineEdit.text()) > 0:
             self.directory = str(self.lineEdit.text())
+            if not os.path.isdir(self.directory):
+                self.show_popup('Info', 'Path does not exist! Type or choose correct path!')
         elif len(self.lineEdit.text()) == 0:
             self.lineEdit.clear()
             self.clear_widgets_after_clicked()
@@ -160,7 +169,15 @@ class Ui_AboutWindow(Ui_widget, QMainWindow):
         super(Ui_AboutWindow, self).__init__()
         self.setupUi(self)
         self.show()
-        
+
+        self.btnGoBackToApp.clicked.connect(self.go_back_to_app)
+
+    def go_back_to_app(self):
+        ui = IzzyCounterWindow()
+        widget.addWidget(ui)
+        widget.setWindowTitle("IzzyCounter")
+        widget.resize(365, 658)
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -168,6 +185,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = IzzyCounterWindow()
     widget.addWidget(ui)
+    widget.setWindowTitle("IzzyCounter")
     widget.resize(365, 658)
     widget.show()
     sys.exit(app.exec_())
