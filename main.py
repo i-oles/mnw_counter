@@ -9,7 +9,8 @@ import re
 import sys
 from datetime import date
 
-# todo: add two checkboxes to gui --> jpg and tiff(default)
+# todo: fixed shape of show popups
+# todo: main window position on screen
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -17,17 +18,19 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.show()
 
-        self.file_ext = 'jpg'
         self.component = 'mnw'
         self.char_1 = ','
         self.char_2 = '-'
-        self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
         self.report_dir = 'Daily_Reports'
 
         self.current_date = date.today()
         self.current_date.strftime("%d-%m-%Y")
 
         self.logo = 'app_logo.jpg'
+
+        self.cBoxList.setChecked(True)
+        self.cBoxCount.setChecked(True)
+        self.cBoxTiff.setChecked(True)
 
         self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
         self.btnBrowse.clicked.connect(self.browse_dir)
@@ -41,7 +44,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.menuAbout.triggered.connect(lambda: self.show_about_widget())
         self.menuFile.triggered.connect(lambda: self.show_popup('Info',
                                                                 f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
-
 
     def show_about_widget(self):
         aw = Ui_AboutWindow()
@@ -71,34 +73,39 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def count_btn_clicked(self):
         self.clear_widgets_after_clicked()
 
-        # todo: all_conditions_ok = pyqtSignal()
-        # todo: add while loops to lineedit, checkboxes etc. purpose: not to remember results.
+        if not self.cBoxTiff.isChecked() and not self.cBoxJpg.isChecked():
+            self.show_popup('Info', 'Please choose file extention!')
+        elif self.cBoxTiff.isChecked() and self.cBoxJpg.isChecked():
+            self.show_popup('Info', 'Please choose only one extention!')
+        elif self.cBoxTiff.isChecked() or self.cBoxJpg.isChecked():
+            if self.cBoxTiff.isChecked():
+                self.file_ext = 'tiff'
+            else:
+                self.file_ext = 'jpg'
 
-        self.verify_lineEdit()
-
-        if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
-            self.show_popup('Info', 'Please choose one of the following display options')
-        elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
-            self.walk_dir()
-            self.make_singles_and_set_list()
-            self.counting_progress()
-            if self.cBoxCount.isChecked():
-                self.count_result = str(len(self.singles_long))
-                self.labelResult.setText(self.count_result)
-            if self.cBoxList.isChecked():
-                self.list_display(self.singles_long, self.listWidgetSingles)
-                self.list_display(self.sets_long, self.listWidgetSets)
-        self.save_as_disabled()
-
-    def verify_lineEdit(self):
-        if len(self.lineEdit.text()) > 0:
+            self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
             self.directory = str(self.lineEdit.text())
-            if not os.path.isdir(self.directory):
-                self.show_popup('Info', 'Path does not exist! Type or choose correct path!')
-        elif len(self.lineEdit.text()) == 0:
-            self.lineEdit.clear()
-            self.clear_widgets_after_clicked()
-            self.show_popup('Info', 'Choose directory path!')
+            dir_path_ok = os.path.isdir(self.directory)
+
+            if len(self.directory) == 0:
+                self.show_popup('Info', 'Please choose directory path!')
+            if len(self.directory) > 0:
+                if not dir_path_ok:
+                    self.show_popup('Info', 'Path does not exist! Please type or choose correct path!')
+                else:
+                    if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
+                        self.show_popup('Info', 'Please choose one of the following display options')
+                    elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
+                        self.walk_dir()
+                        self.make_singles_and_set_list()
+                        self.counting_progress()
+                        if self.cBoxCount.isChecked():
+                            self.count_result = str(len(self.singles_long))
+                            self.labelResult.setText(self.count_result)
+                        if self.cBoxList.isChecked():
+                            self.list_display(self.singles_long, self.listWidgetSingles)
+                            self.list_display(self.sets_long, self.listWidgetSets)
+                    self.save_as_disabled()
 
     def show_popup(self, title, text):
         msg = QMessageBox()

@@ -6,43 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
-    <height>658</height>
+    <width>388</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>IzzyCounter</string>
   </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="7" column="0">
-     <widget class="QLabel" name="labelListSingles">
-      <property name="text">
-       <string>List of objects:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="cBoxList">
-      <property name="text">
-       <string>Display objects list</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1" colspan="2">
-     <widget class="QListWidget" name="listWidgetSingles">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>200</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="1">
+    <item row="19" column="1">
      <spacer name="vSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -58,24 +34,13 @@
       </property>
      </spacer>
     </item>
-    <item row="5" column="0" colspan="3">
-     <widget class="QProgressBar" name="progressBar">
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="cBoxCount">
+    <item row="20" column="0">
+     <widget class="QLabel" name="labelListSets">
       <property name="text">
-       <string>Display counting result</string>
+       <string>List of objects in sets:</string>
       </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLabel" name="labelResult">
-      <property name="text">
-       <string/>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </item>
@@ -98,29 +63,24 @@
       </property>
      </widget>
     </item>
-    <item row="9" column="1" colspan="2">
-     <widget class="QListWidget" name="listWidgetSets">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>160</height>
-       </size>
+    <item row="16" column="0" colspan="3">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
       </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>160</height>
-       </size>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Choose file extension:</string>
       </property>
      </widget>
     </item>
     <item row="9" column="0">
-     <widget class="QLabel" name="labelListSets">
+     <widget class="QCheckBox" name="cBoxCount">
       <property name="text">
-       <string>List of objects in sets:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       <string>Display counting result</string>
       </property>
      </widget>
     </item>
@@ -131,14 +91,70 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="labelPhotographed">
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="cBoxTiff">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="text">
-       <string>Photographed objects:</string>
+       <string>TIFF</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="0" colspan="3">
+    <item row="18" column="1" colspan="2">
+     <widget class="QListWidget" name="listWidgetSingles">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>230</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLineEdit" name="lineEdit"/>
+    </item>
+    <item row="18" column="0">
+     <widget class="QLabel" name="labelListSingles">
+      <property name="text">
+       <string>List of objects:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QCheckBox" name="cBoxList">
+      <property name="text">
+       <string>Display objects list</string>
+      </property>
+     </widget>
+    </item>
+    <item row="20" column="1" colspan="2">
+     <widget class="QListWidget" name="listWidgetSets">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>140</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>140</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0" colspan="3">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="15" column="0" colspan="3">
      <widget class="QPushButton" name="btnCount">
       <property name="minimumSize">
        <size>
@@ -151,8 +167,26 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QLineEdit" name="lineEdit"/>
+    <item row="17" column="0">
+     <widget class="QLabel" name="labelPhotographed">
+      <property name="text">
+       <string>Photographed objects:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="17" column="1">
+     <widget class="QLabel" name="labelResult">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QCheckBox" name="cBoxJpg">
+      <property name="text">
+       <string>JPG</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -161,7 +195,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>365</width>
+     <width>388</width>
      <height>22</height>
     </rect>
    </property>
