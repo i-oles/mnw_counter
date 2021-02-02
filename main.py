@@ -1,6 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
-from PyQt5.QtCore import pyqtSignal
 from string_operations import StringOperations
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
@@ -8,9 +7,6 @@ import os
 import re
 import sys
 from datetime import date
-
-# todo: fixed shape of show popups
-# todo: main window position on screen
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -42,14 +38,15 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.menuFile.triggered.connect(self.save_to_file)
 
         self.menuAbout.triggered.connect(lambda: self.show_about_widget())
-        self.menuFile.triggered.connect(lambda: self.show_popup('Info',
-                                                                f'Your data was successfully exported to folder {self.report_dir} in your images directory'))
+        self.menuFile.triggered.connect(
+            lambda: self.show_popup(f"Your results was successfully exported to folder '{self.report_dir}' in your images folder"))
+
 
     def show_about_widget(self):
         aw = Ui_AboutWindow()
         widget.addWidget(aw)
         widget.setWindowTitle("About IzzyCounter")
-        widget.resize(814, 780)
+        widget.setGeometry(300, 0, 814, 780)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def btn_count_disabled(self):
@@ -74,9 +71,9 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.clear_widgets_after_clicked()
 
         if not self.cBoxTiff.isChecked() and not self.cBoxJpg.isChecked():
-            self.show_popup('Info', 'Please choose file extention!')
+            self.show_popup('Please choose file extention!')
         elif self.cBoxTiff.isChecked() and self.cBoxJpg.isChecked():
-            self.show_popup('Info', 'Please choose only one extention!')
+            self.show_popup('Please choose only one extention!')
         elif self.cBoxTiff.isChecked() or self.cBoxJpg.isChecked():
             if self.cBoxTiff.isChecked():
                 self.file_ext = 'tiff'
@@ -88,13 +85,13 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             dir_path_ok = os.path.isdir(self.directory)
 
             if len(self.directory) == 0:
-                self.show_popup('Info', 'Please choose directory path!')
+                self.show_popup('Please choose directory path!')
             if len(self.directory) > 0:
                 if not dir_path_ok:
-                    self.show_popup('Info', 'Path does not exist! Please type or choose correct path!')
+                    self.show_popup('Path does not exist! Please type or choose correct path!')
                 else:
                     if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
-                        self.show_popup('Info', 'Please choose one of the following display options')
+                        self.show_popup('Please choose one of the following display options')
                     elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
                         self.walk_dir()
                         self.make_singles_and_set_list()
@@ -107,9 +104,9 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
                             self.list_display(self.sets_long, self.listWidgetSets)
                     self.save_as_disabled()
 
-    def show_popup(self, title, text):
+    def show_popup(self, text):
         msg = QMessageBox()
-        msg.setWindowTitle(title)
+        msg.setIcon(QMessageBox.Information)
         msg.setText(text)
         msg.exec_()
 
@@ -183,16 +180,16 @@ class Ui_AboutWindow(Ui_widget, QMainWindow):
         ui = IzzyCounterWindow()
         widget.addWidget(ui)
         widget.setWindowTitle("IzzyCounter")
-        widget.resize(365, 658)
+        widget.setGeometry(550, 0, 365, 658)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    widget = QtWidgets.QStackedWidget()
     MainWindow = QtWidgets.QMainWindow()
     ui = IzzyCounterWindow()
+    widget = QtWidgets.QStackedWidget()
     widget.addWidget(ui)
     widget.setWindowTitle("IzzyCounter")
-    widget.resize(365, 658)
+    widget.setGeometry(550, 0, 365, 658)
     widget.show()
     sys.exit(app.exec_())
