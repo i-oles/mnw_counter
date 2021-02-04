@@ -3,8 +3,7 @@ Python version used 3.8.3
 Python libraries:
 PyQt5 		https://pypi.org/project/PyQt5/
 
-About a program:
-# IzzyCounter
+#IzzyCounter
 
 Is counter designed for photographers in working in Nationa Museum in Warsaw.
 It count the exact number of photographed objects from provided files.
