@@ -1,8 +1,6 @@
 
-Python version used 3.8.3
-
-Python libraries:
-PyQt5 		https://pypi.org/project/PyQt5/
+Python version used:    3.8.3
+Python libraries:       PyQt5 		https://pypi.org/project/PyQt5/
 
 About IzzyCounter:
 
