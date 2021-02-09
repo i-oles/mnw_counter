@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
+from PyQt5.QtCore import Qt
 from string_operations import StringOperations
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
@@ -7,6 +8,9 @@ import os
 import re
 import sys
 from datetime import date
+
+
+#todo logo
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -18,29 +22,43 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.char_1 = ','
         self.char_2 = '-'
         self.report_dir = 'Daily_Reports'
+        self.tiff_extension = 'tiff'
+        self.jpg_extension = 'jpg'
 
         self.current_date = date.today()
         self.current_date.strftime("%d-%m-%Y")
 
         self.logo = 'app_logo.jpg'
+        self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
 
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
-
-        self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
-        self.btnBrowse.clicked.connect(self.browse_dir)
         self.btnCount.setDisabled(True)
-        self.btnCount.clicked.connect(self.count_btn_clicked)
-        self.lineEdit.textChanged.connect(self.btn_count_disabled)
-
         self.exportResults.setDisabled(True)
+
+        self.main()
+
+    def main(self):
+        self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
+        self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
+
+        self.btnBrowse.clicked.connect(self.browse_dir)
+
+        self.btnCount.clicked.connect(self.clear_widgets_after_clicked)
+        self.btnCount.clicked.connect(lambda: self.check_file_extention(self.tiff_extension, self.jpg_extension))
+        self.btnCount.clicked.connect(self.check_is_lineEdit_empty)
+        self.btnCount.clicked.connect(self.is_manual_path_typing_correct)
+        self.btnCount.clicked.connect(self.count_btn_clicked)
+        self.btnCount.clicked.connect(self.allow_export_results_after_count)
+
+        self.lineEdit.textChanged.connect(self.unlock_btn_count)
+
         self.menuFile.triggered.connect(self.save_to_file)
 
-        self.menuAbout.triggered.connect(lambda: self.show_about_widget())
+        self.menuAbout.triggered.connect(self.show_about_widget)
         self.menuFile.triggered.connect(
             lambda: self.show_popup(f"Your results was successfully exported to folder '{self.report_dir}' in your images folder"))
-
 
     def show_about_widget(self):
         aw = Ui_AboutWindow()
@@ -49,13 +67,9 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         widget.setGeometry(300, 0, 814, 780)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
-    def btn_count_disabled(self):
+    def unlock_btn_count(self):
         if len(self.lineEdit.text()) > 0:
             self.btnCount.setDisabled(False)
-
-    def save_as_disabled(self):
-        if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
-            self.exportResults.setDisabled(False)
 
     def browse_dir(self):
         self.directory = str(QtWidgets.QFileDialog.getExistingDirectory())
@@ -67,42 +81,48 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.listWidgetSingles.clear()
         self.listWidgetSets.clear()
 
+    def is_manual_path_typing_correct(self):
+        self.directory = str(self.lineEdit.text())
+        self.dir_path_ok = os.path.isdir(self.directory)
+        if self.lineEdit.text():
+            if not self.dir_path_ok:
+                self.show_popup('Path does not exist! Please type or choose correct path!')
+
+    def check_is_lineEdit_empty(self):
+        if not self.lineEdit.text():
+            self.show_popup('Please choose directory path!')
+
+    #todo: correct this method - separate couting from settings
     def count_btn_clicked(self):
-        self.clear_widgets_after_clicked()
+        if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
+            self.show_popup('Please choose one of the following display options')
+        elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
+            self.walk_dir()
+            self.make_singles_and_set_list()
+            self.counting_progress()
+            if self.cBoxCount.isChecked():
+                self.count_result = str(len(self.singles_long))
+                self.labelResult.setText(self.count_result)
+            if self.cBoxList.isChecked():
+                self.list_display(self.singles_long, self.listWidgetSingles)
+                self.list_display(self.sets_long, self.listWidgetSets)
 
-        if not self.cBoxTiff.isChecked() and not self.cBoxJpg.isChecked():
-            self.show_popup('Please choose file extention!')
-        elif self.cBoxTiff.isChecked() and self.cBoxJpg.isChecked():
-            self.show_popup('Please choose only one extention!')
-        elif self.cBoxTiff.isChecked() or self.cBoxJpg.isChecked():
-            if self.cBoxTiff.isChecked():
-                self.file_ext = 'tiff'
+    def allow_export_results_after_count(self):
+        if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
+            self.exportResults.setDisabled(False)
+
+    def uncheck_another_cBox(self, state):
+        if state == Qt.Checked:
+            if self.sender() == self.cBoxTiff:
+                self.cBoxJpg.setChecked(False)
             else:
-                self.file_ext = 'jpg'
+                self.cBoxTiff.setChecked(False)
 
-            self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
-            self.directory = str(self.lineEdit.text())
-            dir_path_ok = os.path.isdir(self.directory)
-
-            if len(self.directory) == 0:
-                self.show_popup('Please choose directory path!')
-            if len(self.directory) > 0:
-                if not dir_path_ok:
-                    self.show_popup('Path does not exist! Please type or choose correct path!')
-                else:
-                    if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
-                        self.show_popup('Please choose one of the following display options')
-                    elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
-                        self.walk_dir()
-                        self.make_singles_and_set_list()
-                        self.counting_progress()
-                        if self.cBoxCount.isChecked():
-                            self.count_result = str(len(self.singles_long))
-                            self.labelResult.setText(self.count_result)
-                        if self.cBoxList.isChecked():
-                            self.list_display(self.singles_long, self.listWidgetSingles)
-                            self.list_display(self.sets_long, self.listWidgetSets)
-                    self.save_as_disabled()
+    def check_file_extention(self, extension_1, extension_2):
+        if self.cBoxTiff.isChecked():
+            self.file_extension = extension_1
+        else:
+            self.file_extension = extension_2
 
     def show_popup(self, text):
         msg = QMessageBox()
@@ -112,6 +132,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
     def walk_dir(self):
         self.ones_all = []
+        self.regex_search = f'.*\(0?1\)\.{self.file_extension}?$'
         for subdir, dirs, files in os.walk(self.directory):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
