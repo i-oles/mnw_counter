@@ -1,4 +1,0 @@
-Python version 3.8.3
-
-Python libraries:
-PyQt5 		https://pypi.org/project/PyQt5/
