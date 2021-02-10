@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui, uic
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations
@@ -9,14 +9,22 @@ import re
 import sys
 from datetime import date
 
-
 #todo logo
+#todo uncheck tiff bug: popup or unable check
+#todo center app on screen
+#todo correct count method - separate couting from settings
+
+
+class Ui_AboutWindow(Ui_widget, QMainWindow):
+    def __init__(self, parent=None):
+        super(Ui_AboutWindow, self).__init__(parent)
+        self.setupUi(self)
+
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
-    def __init__(self):
-        super(IzzyCounterWindow, self).__init__()
+    def __init__(self, parent=None):
+        super(IzzyCounterWindow, self).__init__(parent)
         self.setupUi(self)
-        self.show()
 
         self.component = 'mnw'
         self.char_1 = ','
@@ -31,15 +39,12 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.logo = 'app_logo.jpg'
         self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
 
-        self.main()
-
-    def main(self):
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
         self.btnCount.setDisabled(True)
         self.exportResults.setDisabled(True)
-        
+
         self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
         self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
 
@@ -56,16 +61,14 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
         self.menuFile.triggered.connect(self.save_to_file)
 
-        self.menuAbout.triggered.connect(self.show_about_widget)
+        self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
+        self.second_window = Ui_AboutWindow(self)
+
         self.menuFile.triggered.connect(
             lambda: self.show_popup(f"Your results was successfully exported to folder '{self.report_dir}' in your images folder"))
 
-    def show_about_widget(self):
-        aw = Ui_AboutWindow()
-        widget.addWidget(aw)
-        widget.setWindowTitle("About IzzyCounter")
-        widget.setGeometry(300, 0, 814, 780)
-        widget.setCurrentIndex(widget.currentIndex()+1)
+    def show_about_IzzyCounter(self):
+        self.second_window.show()
 
     def unlock_btn_count(self):
         if len(self.lineEdit.text()) > 0:
@@ -92,7 +95,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         if not self.lineEdit.text():
             self.show_popup('Please choose directory path!')
 
-    #todo: correct this method - separate couting from settings
     def count_btn_clicked(self):
         if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
             self.show_popup('Please choose one of the following display options')
@@ -188,29 +190,11 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             result_file.writelines(list_format(self.sets_long))
         result_file.close()
 
-
-class Ui_AboutWindow(Ui_widget, QMainWindow):
-    def __init__(self):
-        super(Ui_AboutWindow, self).__init__()
-        self.setupUi(self)
-        self.show()
-
-        self.btnGoBackToApp.clicked.connect(self.go_back_to_app)
-
-    def go_back_to_app(self):
-        ui = IzzyCounterWindow()
-        widget.addWidget(ui)
-        widget.setWindowTitle("IzzyCounter")
-        widget.setGeometry(550, 0, 365, 658)
-        widget.setCurrentIndex(widget.currentIndex()+1)
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    ui = IzzyCounterWindow()
+    ui.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = IzzyCounterWindow()
-    widget = QtWidgets.QStackedWidget()
-    widget.addWidget(ui)
-    widget.setWindowTitle("IzzyCounter")
-    widget.setGeometry(550, 0, 365, 658)
-    widget.show()
-    sys.exit(app.exec_())
+    main()
