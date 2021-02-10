@@ -31,15 +31,15 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.logo = 'app_logo.jpg'
         self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
 
+        self.main()
+
+    def main(self):
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
         self.btnCount.setDisabled(True)
         self.exportResults.setDisabled(True)
-
-        self.main()
-
-    def main(self):
+        
         self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
         self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
 
