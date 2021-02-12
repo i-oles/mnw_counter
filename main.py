@@ -39,6 +39,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.logo = 'app_logo.jpg'
         self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
 
+        self.ready_to_count = True
+
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
@@ -54,12 +56,23 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.btnCount.clicked.connect(lambda: self.check_file_extention(self.tiff_extension, self.jpg_extension))
         self.btnCount.clicked.connect(self.check_is_lineEdit_empty)
         self.btnCount.clicked.connect(self.is_manual_path_typing_correct)
-        self.btnCount.clicked.connect(self.count_btn_clicked)
-        self.btnCount.clicked.connect(self.allow_export_results_after_count)
+        #self.btnCount.clicked.connect(self.boxes_not_checked)
+
+        if self.ready_to_count:
+            self.btnCount.clicked.connect(self.find_all_ones_from_dir)
+            self.btnCount.clicked.connect(self.make_singles_and_set_list)
+            self.btnCount.clicked.connect(self.counting_progress)
+            if self.cBoxCount.isChecked():
+                self.count_result = str(len(self.singles_long))
+                self.labelResult.setText(self.count_result)
+            if self.cBoxList.isChecked():
+                self.list_display(self.singles_long, self.listWidgetSingles)
+                self.list_display(self.sets_long, self.listWidgetSets)
+            self.btnCount.clicked.connect(self.allow_export_results_after_count)
 
         self.lineEdit.textChanged.connect(self.unlock_btn_count)
 
-        self.menuFile.triggered.connect(self.save_to_file)
+        self.menuFile.triggered.connect(self.export_to_file)
 
         self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
         self.second_window = Ui_AboutWindow(self)
@@ -90,24 +103,16 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         if self.lineEdit.text():
             if not self.dir_path_ok:
                 self.show_popup('Path does not exist! Please type or choose correct path!')
+            if self.dir_path_ok:
+                self.ready_to_count = True
 
     def check_is_lineEdit_empty(self):
         if not self.lineEdit.text():
             self.show_popup('Please choose directory path!')
 
-    def count_btn_clicked(self):
+    def boxes_not_checked(self):
         if not self.cBoxCount.isChecked() and not self.cBoxList.isChecked():
             self.show_popup('Please choose one of the following display options')
-        elif self.cBoxCount.isChecked() or self.cBoxList.isChecked():
-            self.walk_dir()
-            self.make_singles_and_set_list()
-            self.counting_progress()
-            if self.cBoxCount.isChecked():
-                self.count_result = str(len(self.singles_long))
-                self.labelResult.setText(self.count_result)
-            if self.cBoxList.isChecked():
-                self.list_display(self.singles_long, self.listWidgetSingles)
-                self.list_display(self.sets_long, self.listWidgetSets)
 
     def allow_export_results_after_count(self):
         if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
@@ -120,11 +125,11 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             else:
                 self.cBoxTiff.setChecked(False)
 
-    def check_file_extention(self, extension_1, extension_2):
+    def check_file_extention(self, ext_1, ext_2):
         if self.cBoxTiff.isChecked():
-            self.file_extension = extension_1
+            self.file_ext = ext_1
         else:
-            self.file_extension = extension_2
+            self.file_ext = ext_2
 
     def show_popup(self, text):
         msg = QMessageBox()
@@ -132,9 +137,9 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         msg.setText(text)
         msg.exec_()
 
-    def walk_dir(self):
+    def find_all_ones_from_dir(self):
         self.ones_all = []
-        self.regex_search = f'.*\(0?1\)\.{self.file_extension}?$'
+        self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
         for subdir, dirs, files in os.walk(self.directory):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
@@ -168,7 +173,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         for num, item in enumerate(list):
             widget.insertItem(num, item)
 
-    def save_to_file(self):
+    def export_to_file(self):
         if not os.path.exists(f'{self.directory}/{self.report_dir}'):
             os.mkdir(f'{self.directory}/{self.report_dir}')
 
