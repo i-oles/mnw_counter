@@ -9,6 +9,7 @@ import re
 import sys
 from datetime import date
 
+#todo uncheck count and list cBox
 #todo logo
 #todo uncheck tiff bug: popup or unable check
 #todo center app on screen
@@ -39,8 +40,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.logo = 'app_logo.jpg'
         self.centralwidget.setWindowIcon(QtGui.QIcon(self.logo))
 
-        self.ready_to_count = True
-
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
@@ -50,35 +49,40 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
         self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
 
-        self.btnBrowse.clicked.connect(self.browse_dir)
-
-        self.btnCount.clicked.connect(self.clear_widgets_after_clicked)
-        self.btnCount.clicked.connect(lambda: self.check_file_extention(self.tiff_extension, self.jpg_extension))
-        self.btnCount.clicked.connect(self.check_is_lineEdit_empty)
-        self.btnCount.clicked.connect(self.is_manual_path_typing_correct)
-        #self.btnCount.clicked.connect(self.boxes_not_checked)
-
-        if self.ready_to_count:
-            self.btnCount.clicked.connect(self.find_all_ones_from_dir)
-            self.btnCount.clicked.connect(self.make_singles_and_set_list)
-            self.btnCount.clicked.connect(self.counting_progress)
-            if self.cBoxCount.isChecked():
-                self.count_result = str(len(self.singles_long))
-                self.labelResult.setText(self.count_result)
-            if self.cBoxList.isChecked():
-                self.list_display(self.singles_long, self.listWidgetSingles)
-                self.list_display(self.sets_long, self.listWidgetSets)
-            self.btnCount.clicked.connect(self.allow_export_results_after_count)
-
         self.lineEdit.textChanged.connect(self.unlock_btn_count)
 
+        self.btnBrowse.clicked.connect(self.browse_dir)
+        self.btnCount.clicked.connect(self.when_btnCount_clicked)
         self.menuFile.triggered.connect(self.export_to_file)
-
         self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
         self.second_window = Ui_AboutWindow(self)
 
         self.menuFile.triggered.connect(
             lambda: self.show_popup(f"Your results was successfully exported to folder '{self.report_dir}' in your images folder"))
+
+    def when_btnCount_clicked(self):
+        self.clear_widgets_after_clicked()
+        self.check_file_extention(self.tiff_extension, self.jpg_extension)
+        self.check_is_lineEdit_empty()
+        self.is_manual_path_typing_correct()
+        self.boxes_not_checked()
+        if self.dir_path_ok:
+            self.find_all_ones_from_dir()
+            self.make_singles_and_set_list()
+            self.counting_progress()
+            self.display_count_result()
+            self.display_item_lists()
+            self.allow_export_results_after_count()
+
+    def display_count_result(self):
+        if self.cBoxCount.isChecked():
+            self.count_result = str(len(self.singles_long))
+            self.labelResult.setText(self.count_result)
+
+    def display_item_lists(self):
+        if self.cBoxList.isChecked():
+            self.list_display(self.singles_long, self.listWidgetSingles)
+            self.list_display(self.sets_long, self.listWidgetSets)
 
     def show_about_IzzyCounter(self):
         self.second_window.show()
@@ -103,8 +107,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         if self.lineEdit.text():
             if not self.dir_path_ok:
                 self.show_popup('Path does not exist! Please type or choose correct path!')
-            if self.dir_path_ok:
-                self.ready_to_count = True
 
     def check_is_lineEdit_empty(self):
         if not self.lineEdit.text():
