@@ -144,7 +144,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         ones_without_mnw = [StringOperations.cut_in_char(item, self.component) for item in ones_separated]
         ones_unique = list(set(ones_without_mnw))
         ones_short = [StringOperations.cut_in_char(item, self.hyphen_char) for item in ones_unique]
-        ones_dict = dict(zip(ones_short, ones_unique))
+        ones_zipped = zip(ones_short, ones_unique)
+        ones_dict = dict(ones_zipped)
         singles_short = list(set(ones_short))
         ones_dict_keys = ones_dict.keys()
 
