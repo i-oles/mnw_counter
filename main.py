@@ -3,17 +3,18 @@ from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations, FileContent
 from gui import Ui_MainWindow
-from about_widget import Ui_widget
+from about_widget_n import Ui_widget
 import os
 import re
 import sys
 from datetime import date
 
-#todo design logo
 #todo fix progress bar
 #todo commentary
-#todo about window design
 #todo make test file
+#todo image about
+#todo remember settings
+# fix algo count problem - keys replace with values - somehow :)
 
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
@@ -51,7 +52,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
         self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
         self.lineEdit.textChanged.connect(self.unlock_btn_count)
-        self.btnBrowse.clicked.connect(self.browse_dir)
+        self.btnBrowse.clicked.connect(self.set_dir_path_in_lineEdit)
         self.btnCount.clicked.connect(self.when_btnCount_clicked)
         self.menuFile.triggered.connect(self.export_to_file)
         self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
@@ -76,27 +77,27 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             self.btnCount.setDisabled(False)
 
     # *** setting up directory path using btnBrowse ***
-    def browse_dir(self):
+    def set_dir_path_in_lineEdit(self):
         self.directory = str(QtWidgets.QFileDialog.getExistingDirectory())
         self.lineEdit.setText(f'{self.directory}')
 
-    # *** actions called after btnCount clicked (clearing widgets, verifying directory path, checkboxes, and finally counting and making lists) ***
+    # *** actions called after btnCount clicked ***
     def when_btnCount_clicked(self):
         self.clear_widgets_after_clicked()
         self.check_file_extention(self.tiff_ext, self.jpg_ext)
         self.check_is_empty(self.lineEdit, self.show_popup, 'Please choose directory path!')
-        self.is_manual_path_typing_correct()
+        self.is_manual_path_ok()
         if self.dir_path_ok:
-            self.cBoxes_unchecked(self.cBoxTiff, self.cBoxJpg, self.show_popup, 'Please choose file extension!')
+            self.when_all_cBox_unchecked(self.cBoxTiff, self.cBoxJpg, self.show_popup, 'Please choose file extension!')
             if self.cBoxJpg.isChecked() or self.cBoxTiff.isChecked():
-                self.cBoxes_unchecked(self.cBoxCount, self.cBoxList, self.show_popup, 'Please choose display option!')
+                self.when_all_cBox_unchecked(self.cBoxCount, self.cBoxList, self.show_popup, 'Please choose display option!')
                 if self.dir_path_ok and (self.cBoxCount.isChecked() or self.cBoxList.isChecked()):
                     self.find_all_ones_from_dir()
                     self.make_singles_and_set_list()
                     self.counting_progress()
                     self.display_count_result()
                     self.display_item_lists()
-                    self.allow_export_results_after_count()
+                    self.allow_export_results()
 
     def clear_widgets_after_clicked(self):
         self.progressBar.setValue(0)
@@ -114,14 +115,15 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         if not widget.text():
             func(message)
 
-    def is_manual_path_typing_correct(self):
+    # *** checking directory path typed manually ***
+    def is_manual_path_ok(self):
         self.directory = str(self.lineEdit.text())
         self.dir_path_ok = os.path.isdir(self.directory)
         if self.lineEdit.text():
             if not self.dir_path_ok:
                 self.show_popup('Path does not exist! Please type or choose correct path!')
 
-    def cBoxes_unchecked(self, cBox1, cBox2, func, message):
+    def when_all_cBox_unchecked(self, cBox1, cBox2, func, message):
         if not cBox1.isChecked() and not cBox2.isChecked():
             func(message)
 
@@ -135,18 +137,63 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
                 if first_file:
                     self.ones_all.append(file)
 
-    # *** separating two object names from one filename, cutting everything after 'mnw' (included), making a set to find only unique ones
-    # *** then it's filtering them and appending to lists of objects.
+    # *******   1. some of files can have two objects in filename --> function at first separate them
+    #           2. all files has 'mnw' in filename --> function cut everything from 'mnw' (include)
+    #           3. cutting action cause many duplicates --> making a set to develop only unique names
+
     def make_singles_and_set_list(self):
+        ones_separated = list(StringOperations.split_two_items(self.ones_all, self.coma_char, self.component))
+        print(ones_separated)
+        ones_without_mnw = [StringOperations.cut_in_char(item, self.component) for item in ones_separated]
+        print(ones_without_mnw)
+        ones_unique = sorted(list(set(ones_without_mnw)))
+        print(ones_unique)
+        print(len(ones_unique))
+        ones_short = [StringOperations.cut_in_char(item, self.hyphen_char) for item in ones_unique]
+        print(ones_short)
+        print(len(ones_short))
+        ones_zipped = list(zip(ones_unique, ones_short))
+        print(ones_zipped)
+        ones_dict = dict(ones_zipped)
+        print(ones_dict)
+        print(len(ones_dict))
+        singles_short = list(set(ones_short))
+        print(singles_short)
+        ones_dict_values = ones_dict.values()
+        print(ones_dict_values)
+
+        self.singles_long = []
+        self.sets_long = ones_unique.copy()
+        for item in singles_short:
+            if item in ones_dict_values:
+                self.singles_long.append(ones_dict[item])
+                self.sets_long.remove(ones_dict[item])
+        self.singles_long = sorted(self.singles_long)
+        self.sets_long = sorted(self.sets_long)
+
+
+    def old_make_singles_and_set_list(self):
         self.singles_long = []
 
         ones_separated = list(StringOperations.split_two_items(self.ones_all, self.coma_char, self.component))
+        print(ones_separated)
         ones_without_mnw = [StringOperations.cut_in_char(item, self.component) for item in ones_separated]
-        ones_unique = list(set(ones_without_mnw))
+        print(ones_without_mnw)
+        ones_unique = sorted(list(set(ones_without_mnw)))
+        print(ones_unique)
+        print(len(ones_unique))
         ones_short = [StringOperations.cut_in_char(item, self.hyphen_char) for item in ones_unique]
-        ones_dict = dict(zip(ones_short, ones_unique))
+        print(ones_short)
+        print(len(ones_short))
+        ones_zipped = list(zip(ones_short, ones_unique))
+        print(ones_zipped)
+        ones_dict = dict(ones_zipped)
+        print(ones_dict)
+        print(len(ones_dict))
         singles_short = list(set(ones_short))
+        print(singles_short)
         ones_dict_keys = ones_dict.keys()
+        print(ones_dict_keys)
 
         self.sets_long = ones_unique.copy()
         for item in singles_short:
@@ -170,7 +217,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             self.list_display(self.singles_long, self.listWidgetSingles)
             self.list_display(self.sets_long, self.listWidgetSets)
 
-    def allow_export_results_after_count(self):
+    def allow_export_results(self):
         if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
             self.exportResults.setDisabled(False)
 
