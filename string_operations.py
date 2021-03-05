@@ -49,3 +49,7 @@ class StringOperations:
             return part_before_char
         else:
             return item
+
+    @staticmethod
+    def add_ones_to_multi_keys_dict(zipped_list, default_dict):
+        [default_dict[i[0]].append(i[1]) for i in zipped_list]
