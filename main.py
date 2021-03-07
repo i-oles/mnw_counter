@@ -16,13 +16,18 @@ from datetime import date
 #todo make test file
 #todo image about
 #todo remember settings
-# fix algo count problem - keys replace with values - somehow :)
+#todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
 
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
     def __init__(self, parent=None):
         super(Ui_AboutWindow, self).__init__(parent)
         self.setupUi(self)
+
+        about_app_description = QtGui.QPixmap()
+        about_app_description.load('about_IzzyCounter.png')
+        self.imageLabel.setPixmap(about_app_description)
+        self.verticalLayout.addWidget(self.imageLabel)
 
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
@@ -132,7 +137,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     # *** finding all files ended with '(1)' (ones) from provided directory
     def find_all_ones_from_dir(self):
         self.ones_all = []
-        self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
+        self.regex_search = f'.*\(0?0?0?1\)\.{self.file_ext}?$'
         for subdir, dirs, files in os.walk(self.directory):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
