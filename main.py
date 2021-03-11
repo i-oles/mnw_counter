@@ -17,6 +17,10 @@ from datetime import date
 #todo remember settings
 #todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
 #todo new logo
+#todo image about
+#todo remember settings
+#todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
+#todo different visual win/mac
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
     def __init__(self, parent=None):
