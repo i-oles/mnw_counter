@@ -14,7 +14,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_widget(object):
     def setupUi(self, widget):
         widget.setObjectName("widget")
-        widget.resize(814, 766)
+        widget.resize(1010, 660)
+        self.verticalLayoutWidget = QtWidgets.QWidget(widget)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 991, 641))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.imageLabel = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.imageLabel.setObjectName("imageLabel")
+        self.verticalLayout.addWidget(self.imageLabel)
 
         self.retranslateUi(widget)
         QtCore.QMetaObject.connectSlotsByName(widget)
@@ -22,6 +31,7 @@ class Ui_widget(object):
     def retranslateUi(self, widget):
         _translate = QtCore.QCoreApplication.translate
         widget.setWindowTitle(_translate("widget", "About IzzyCounter"))
+        self.imageLabel.setText(_translate("widget", "TextLabel"))
 
 
 if __name__ == "__main__":

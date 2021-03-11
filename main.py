@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
+from collections import defaultdict
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget, QLabel, QVBoxLayout
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations, FileContent
 from gui import Ui_MainWindow
@@ -12,15 +14,19 @@ from datetime import date
 #todo fix progress bar
 #todo commentary
 #todo make test file
-#todo image about
 #todo remember settings
-# fix algo count problem - keys replace with values - somehow :)
-
+#todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
+#todo new logo
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
     def __init__(self, parent=None):
         super(Ui_AboutWindow, self).__init__(parent)
         self.setupUi(self)
+
+        about_app_description = QtGui.QPixmap()
+        about_app_description.load('about_IzzyCounter.png')
+        self.imageLabel.setPixmap(about_app_description)
+        self.verticalLayout.addWidget(self.imageLabel)
 
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
@@ -130,7 +136,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     # *** finding all files ended with '(1)' (ones) from provided directory
     def find_all_ones_from_dir(self):
         self.ones_all = []
-        self.regex_search = f'.*\(0?1\)\.{self.file_ext}?$'
+        self.regex_search = f'.*\(0?0?0?1\)\.{self.file_ext}?$'
         for subdir, dirs, files in os.walk(self.directory):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
@@ -139,67 +145,25 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
     # *******   1. some of files can have two objects in filename --> function at first separate them
     #           2. all files has 'mnw' in filename --> function cut everything from 'mnw' (include)
-    #           3. cutting action cause many duplicates --> making a set to develop only unique names
+    #           3. cutting 'mnw' cause many duplicates --> making a set to develop only unique names
 
     def make_singles_and_set_list(self):
         ones_separated = list(StringOperations.split_two_items(self.ones_all, self.coma_char, self.component))
-        print(ones_separated)
         ones_without_mnw = [StringOperations.cut_in_char(item, self.component) for item in ones_separated]
-        print(ones_without_mnw)
         ones_unique = sorted(list(set(ones_without_mnw)))
-        print(ones_unique)
-        print(len(ones_unique))
         ones_short = [StringOperations.cut_in_char(item, self.hyphen_char) for item in ones_unique]
-        print(ones_short)
-        print(len(ones_short))
-        ones_zipped = list(zip(ones_unique, ones_short))
-        print(ones_zipped)
-        ones_dict = dict(ones_zipped)
-        print(ones_dict)
-        print(len(ones_dict))
-        singles_short = list(set(ones_short))
-        print(singles_short)
-        ones_dict_values = ones_dict.values()
-        print(ones_dict_values)
-
-        self.singles_long = []
-        self.sets_long = ones_unique.copy()
-        for item in singles_short:
-            if item in ones_dict_values:
-                self.singles_long.append(ones_dict[item])
-                self.sets_long.remove(ones_dict[item])
-        self.singles_long = sorted(self.singles_long)
-        self.sets_long = sorted(self.sets_long)
-
-
-    def old_make_singles_and_set_list(self):
-        self.singles_long = []
-
-        ones_separated = list(StringOperations.split_two_items(self.ones_all, self.coma_char, self.component))
-        print(ones_separated)
-        ones_without_mnw = [StringOperations.cut_in_char(item, self.component) for item in ones_separated]
-        print(ones_without_mnw)
-        ones_unique = sorted(list(set(ones_without_mnw)))
-        print(ones_unique)
-        print(len(ones_unique))
-        ones_short = [StringOperations.cut_in_char(item, self.hyphen_char) for item in ones_unique]
-        print(ones_short)
-        print(len(ones_short))
         ones_zipped = list(zip(ones_short, ones_unique))
-        print(ones_zipped)
-        ones_dict = dict(ones_zipped)
-        print(ones_dict)
-        print(len(ones_dict))
+        ones_in_multi_keys_dict = defaultdict(list)
+        StringOperations.add_ones_to_multi_keys_dict(ones_zipped, ones_in_multi_keys_dict)
         singles_short = list(set(ones_short))
-        print(singles_short)
-        ones_dict_keys = ones_dict.keys()
-        print(ones_dict_keys)
+        ones_dict_keys = ones_in_multi_keys_dict.keys()
 
+        self.singles_long = []
         self.sets_long = ones_unique.copy()
         for item in singles_short:
             if item in ones_dict_keys:
-                self.singles_long.append(ones_dict[item])
-                self.sets_long.remove(ones_dict[item])
+                self.singles_long.append(ones_in_multi_keys_dict[item][0])
+                self.sets_long.remove(ones_in_multi_keys_dict[item][0])
         self.singles_long = sorted(self.singles_long)
         self.sets_long = sorted(self.sets_long)
 
