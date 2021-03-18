@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget, QLabel, QV
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations, FileContent
 from gui import Ui_MainWindow
-from about_widget_n import Ui_widget
+from about_widget import Ui_widget
 import os
 import re
 import sys
