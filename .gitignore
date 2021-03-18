@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-.__pycache__/
+__pycache__/
 backup_main.py
 gui.ui
 sample_files.zip
