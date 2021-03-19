@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets, QtGui
 from collections import defaultdict
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations, FileContent
 from gui import Ui_MainWindow
@@ -14,12 +13,11 @@ from datetime import date
 #todo fix progress bar
 #todo commentary
 #todo make test file
+#todo think about adding display option with list of filenames which not include 'mnw'
 #todo remember settings
 #todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
 #todo new logo
 #todo image about
-#todo remember settings
-#todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
 #todo different visual win/mac
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
@@ -170,6 +168,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
                 self.sets_long.remove(ones_in_multi_keys_dict[item][0])
         self.singles_long = sorted(self.singles_long)
         self.sets_long = sorted(self.sets_long)
+        return self.singles_long, self.sets_long
 
     def counting_progress(self):
         for percent in range(101):
