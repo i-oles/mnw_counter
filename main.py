@@ -2,13 +2,13 @@ from PyQt5 import QtWidgets, QtGui
 from collections import defaultdict
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
-from string_operations import StringOperations, FileContent
+from string_operations import StringOperations
+from export_to_file import ExportToFile
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
 import os
 import re
 import sys
-from datetime import date
 
 #todo fix progress bar
 #todo commentary
@@ -40,23 +40,19 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.component = 'mnw'
         self.coma_char = ','
         self.hyphen_char = '-'
-        self.report_dir = 'Daily_Reports'
         self.tiff_ext = 'tiff'
         self.jpg_ext = 'jpg'
 
-        self.current_date = date.today()
-        self.current_date.strftime("%d-%m-%Y")
-
         self.second_window = Ui_AboutWindow(self)
 
-        # *** default app settings ***
+        #default settings
         self.cBoxList.setChecked(True)
         self.cBoxCount.setChecked(True)
         self.cBoxTiff.setChecked(True)
         self.btnCount.setDisabled(True)
         self.exportResults.setDisabled(True)
 
-        # *** widgets connections ***
+        #widgets connections
         self.cBoxTiff.stateChanged.connect(self.uncheck_another_cBox)
         self.cBoxJpg.stateChanged.connect(self.uncheck_another_cBox)
         self.lineEdit.textChanged.connect(self.unlock_btn_count)
@@ -65,7 +61,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.menuFile.triggered.connect(self.export_to_file)
         self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
         self.menuFile.triggered.connect(
-            lambda: self.show_popup(f"Your results was successfully exported to folder '{self.report_dir}' in your images folder"))
+            lambda: self.show_popup(f"Your results was successfully exported to folder '{ExportToFile.report_dir_name}' in your images folder"))
 
     def center_on_screen(self):
         geometry = self.frameGeometry()
@@ -84,10 +80,9 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         if len(self.lineEdit.text()) > 0:
             self.btnCount.setDisabled(False)
 
-    # *** setting up directory path using btnBrowse ***
     def set_dir_path_in_lineEdit(self):
-        self.directory = str(QtWidgets.QFileDialog.getExistingDirectory())
-        self.lineEdit.setText(f'{self.directory}')
+        self.directory_path = str(QtWidgets.QFileDialog.getExistingDirectory())
+        self.lineEdit.setText(f'{self.directory_path}')
 
     # *** actions called after btnCount clicked ***
     def when_btnCount_clicked(self):
@@ -125,8 +120,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 
     # *** checking directory path typed manually ***
     def is_manual_path_ok(self):
-        self.directory = str(self.lineEdit.text())
-        self.dir_path_ok = os.path.isdir(self.directory)
+        self.directory_path = str(self.lineEdit.text())
+        self.dir_path_ok = os.path.isdir(self.directory_path)
         if self.lineEdit.text():
             if not self.dir_path_ok:
                 self.show_popup('Path does not exist! Please type or choose correct path!')
@@ -139,7 +134,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def find_all_ones_from_dir(self):
         self.ones_all = []
         self.regex_search = f'.*\(0?0?0?1\)\.{self.file_ext}?$'
-        for subdir, dirs, files in os.walk(self.directory):
+        for subdir, dirs, files in os.walk(self.directory_path):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
                 if first_file:
@@ -191,28 +186,12 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def show_about_IzzyCounter(self):
         self.second_window.show()
 
-    def export_to_file(self):
-        self.make_dir_if_not_exist(self.directory, self.report_dir)
-        report_file = open(f'{self.directory}/{self.report_dir}/{self.current_date}.txt', 'w')
-        FileContent.add_date(report_file, self.current_date, '\n\n')
-        FileContent.add_count_result(report_file, self.count_result, '\n\n')
-        FileContent.add_label(report_file, self.labelPhotographed, '\n')
-        FileContent.add_list_view(report_file, self.list_format(self.singles_long), '\n\n')
-        if self.listWidgetSets.count() > 0:
-            FileContent.add_label(report_file, self.labelListSets, '\n')
-            FileContent.add_list_view(report_file, self.list_format(self.sets_long), '\n')
-        FileContent.close_file(report_file)
-
-    def make_dir_if_not_exist(self, path, dir_name):
-        if not os.path.exists(f'{path}/{dir_name}'):
-            os.mkdir(f'{path}/{dir_name}')
-
-    def list_format(self, some_list):
-        return [(x + '\n') for x in some_list]
-
     def list_display(self, list, widget):
         for num, item in enumerate(list):
             widget.insertItem(num, item)
+
+    def export_to_file(self):
+        ExportToFile(self.directory_path, self.count_result, self.singles_long, self.sets_long, self.listWidgetSets)
 
     def show_popup(self, text):
         msg = QMessageBox()
