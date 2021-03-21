@@ -12,7 +12,6 @@ import sys
 
 #todo fix progress bar
 #todo commentary
-#todo make test file
 #todo think about adding display option with list of filenames which not include 'mnw'
 #todo remember settings
 #todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)

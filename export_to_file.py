@@ -1,6 +1,7 @@
 from datetime import date
 import os
 
+#todo correct names in init
 
 class ExportToFile:
     report_dir_name = 'Daily_Reports'
