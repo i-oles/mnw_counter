@@ -1,5 +1,3 @@
-from itertools import chain
-
 class StringOperations:
     @staticmethod
     def split_two_items(filename_list, delimiter, tag):
@@ -15,7 +13,7 @@ class StringOperations:
                 pass
             else:
                 result_list2.append(filename)
-        return chain(result_list1, result_list2)
+        return result_list1 + result_list2
 
     @staticmethod
     def cut_in_char(item, char):
