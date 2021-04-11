@@ -1,11 +1,11 @@
 Python version used:    3.8.3
-Python libraries:       pip install PyQt5
+Python libraries:       PyQt5
 
 
 About IzzyCounter:
 
 Program designed for Digitisation Department in National Museum in Warsaw.
-It count the exact number of photographed museal objects from provided files (each object has irregular number of images -> from 1 - xxx). For example: in 1000 files could be only 8 objects or could be 500 objects.
+It count the exact number of photographed museal objects from provided files (each object has irregular number of images -> 1 - xxx). For example: in 1000 files could be only 8 objects or could be 500 objects.
 
 
 Each input filename has to fit to pattern (accepted in National Museum):
@@ -16,7 +16,7 @@ note: -> no spaces included
       -> accepted filename characters: 0-9 A-Z a-z , - _ ! ( )
       -> each inventory_number has to include 'mnw'
       -> accepted file extension: tiff, tif or jpg
-      -> ordinal number for 1 -> (1), (01), (001) -> all are ok. 
+      -> ordinal number (1), (01), (001) -> all are ok. 
 
 
 examples:
@@ -47,7 +47,7 @@ input:      aaa222_a-cmnw(1).tif
 output:     aaa222_a-c
 counter:    1
 
-note:       ...a-cmnw!a -> means that it's an image of part 'a' from three-part object 'abc'.
+note:       ...a-cmnw!a -> means it's an image of part 'a' from three-part object 'abc'.
 
 ------------------------------------
 input:      zzz0345_1-2mnw(01).tiff
@@ -85,12 +85,18 @@ note:       no spaces included
 *******************************
 
 Sample files with proper filename content you can download from here:
+
+
+
+Before running app:
+-> install PyQt5 library from terminal -> pip install PyQt5
+-> for checking functionality of program download sample files with proper filename content:
 https://drive.google.com/drive/folders/1yhlN8LT4FgrGFRX_QmSToUF7NeVHFehC?usp=sharing
 
 
 After installing PyQt5 library and downloading samples:
   -> run code from 'main.py'
-  -> provide a sample files and click 'count' button
+  -> provide a sample files in dialog box and click 'count' button
   -> program will display counting result, lists of counted objects and list of eventual sets of objects.
   -> you can export all results to txt file by clicking 'ctrl+S' or choose 'export..' from file menu bar.
   
