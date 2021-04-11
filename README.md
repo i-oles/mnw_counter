@@ -85,6 +85,7 @@ note:       no spaces included
 *******************************
 
 Sample files with proper filename content you can download from here:
+https://drive.google.com/drive/folders/1yhlN8LT4FgrGFRX_QmSToUF7NeVHFehC?usp=sharing
 
 
 After installing PyQt5 library and downloading samples:
