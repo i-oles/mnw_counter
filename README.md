@@ -73,7 +73,7 @@ Sometimes two objects has to be photographed together. Then pattern is:
 inventory_number + ',' + inventory_number + (ordinal number) + .file_extension
 
 input:      bas003_1mnw,mad008_1mnw(1).tif
-            bas003_1mnw,mad008_1mnw(1).tif
+            bas003_1mnw,mad008_1mnw(2).tif
             
 output:     bas003_1mnw
             mad008_1mnw
@@ -83,10 +83,6 @@ counter:    2
 note:       no spaces included
 
 *******************************
-
-Sample files with proper filename content you can download from here:
-
-
 
 Before running app:
 -> install PyQt5 library from terminal -> pip install PyQt5
