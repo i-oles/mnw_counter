@@ -10,14 +10,6 @@ import os
 import re
 import sys
 
-#todo fix progress bar
-#todo commentary
-#todo think about adding display option with list of filenames which not include 'mnw'
-#todo remember settings
-#todo add sorting to multiple key's values (ex from test dir : szm2288_2, szm2288_1-12, szm2288_1-16, szm2288_1-2, szm2288_1-4  -> in singles: szm2288_2, szm2288_1-12)
-#todo new logo
-#todo image about
-#todo different visual win/mac
 
 class Ui_AboutWindow(Ui_widget, QMainWindow):
     def __init__(self, parent=None):
@@ -132,7 +124,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     # *** finding all files ended with '(1)' (ones) from provided directory
     def find_all_ones_from_dir(self):
         self.ones_all = []
-        self.regex_search = f'.*\(0?0?0?1\)\.{self.file_ext}?$'
+        self.regex_search = rf'.*\(0?0?0?1\)\.{self.file_ext}?$'
         for subdir, dirs, files in os.walk(self.directory_path):
             for file in files:
                 first_file = re.findall(r'{}'.format(self.regex_search), file)
@@ -201,7 +193,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     ui = IzzyCounterWindow()
-    app.setWindowIcon(QtGui.QIcon('app_logo.png'))
+    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app_logo.png')
+    app.setWindowIcon(QtGui.QIcon(icon_path))
     ui.show()
     sys.exit(app.exec_())
 
