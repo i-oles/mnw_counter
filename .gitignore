@@ -1,10 +1,4 @@
 .DS_Store
 .idea/
 __pycache__/
-backup_main.py
-gui.ui
-sample_files.zip
-about_widget_old.py
-about_widget_old.ui
-about_widget.ui
-parse_lists.py
+venv
