@@ -4,7 +4,7 @@ import os
 #todo correct names in init
 
 class ExportToFile:
-    report_dir_name = 'Daily_Reports'
+    report_dir_name = 'daily_reports'
 
     current_date = date.today()
     current_date.strftime("%d-%m-%Y")

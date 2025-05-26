@@ -7,15 +7,24 @@ pip install -r requirements.txt
 python3 main.py
 ```
 # Testing
+___
+run:  
+`python3 test_make_lists_unittest.py`
+___
+
 testing files for *mnw_counter* are in /test_files
 
 in gui:
 - provide a sample files in dialog box 
 - choose tiff file extension and set display settings
 - click *count* button
-- you can export all results to *txt* file by clicking 'ctrl+S' or choose 'export..' from file menu bar.
+- you can export all results to *txt* file in two ways (report will be saved in test_files/daily_reports):  
+  - click file / 'Export results...'
+  - clicking 'ctrl+s'
 
 # About IzzyCounter:
+
+***MY FIRST PROJECT***
 
 For few years I've been working in National Museum in Warsaw as a Photographer - Digitisation Specialist.  
 I needed a tool which will count the exact number of photographed objects from provided files.  
