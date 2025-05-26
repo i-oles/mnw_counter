@@ -1,55 +1,34 @@
 from datetime import date
 import os
 
-#todo correct names in init
+REPORT_DIR_NAME = 'daily_reports'
+
+def make_dir_if_not_exist(dir_path):
+    os.makedirs(dir_path, exist_ok=True)
+
+def list_view(some_list):
+    return [f'{line}\n' for line in some_list]
 
 class ExportToFile:
-    report_dir_name = 'daily_reports'
-
-    current_date = date.today()
-    current_date.strftime("%d-%m-%Y")
-
-    one_empty_line = '\n'
-    two_empty_lines = '\n\n'
-
-    def __init__(self, dir_path, count_result, singles_list, sets_list, widget):
-        self.dir_path = dir_path
+    def __init__(self, dir_path, count_result, singles_list, sets_list=None):
         self.count_result = count_result
-        self.singles_long = singles_list
-        self.sets_long = sets_list
-        self.widget = widget
+        self.singles_list = singles_list
+        self.sets_list = sets_list or []
+        self.current_date = date.today().strftime("%d-%m-%Y")
+        self.report_dir_path = os.path.join(dir_path, REPORT_DIR_NAME)
 
-        self.report_dir_path = f'{self.dir_path}/{self.report_dir_name}'
+    def generate_report(self):
+        make_dir_if_not_exist(self.report_dir_path)
+        report_path = os.path.join(self.report_dir_path, f'{self.current_date}.txt')
 
-        self.preparations_before_write()
-        self.write_content()
-        self.report_file.close()
+        with open(report_path, 'w', encoding='utf-8') as file:
+            file.write(f'Date: {self.current_date}\n\n')
+            file.write(f'You had taken pictures of {self.count_result} objects.\n\n')
+            file.write('Photographed:\n')
+            file.writelines(list_view(self.singles_list))
+            file.write('\n')
 
-    def preparations_before_write(self):
-        self.make_dir_if_not_exist(self.report_dir_path)
-        self.make_empty_report_file(self.report_dir_path, self.current_date)
-
-    def make_dir_if_not_exist(self, dir_path):
-        if not os.path.exists(dir_path):
-            os.mkdir(dir_path)
-
-    def make_empty_report_file(self, dir_path, date):
-        write_mode = 'w'
-        self.report_file = open(f'{dir_path}/{date}.txt', write_mode)
-
-    def write_content(self):
-        self.report_file.write(f'Date: {self.current_date}{self.two_empty_lines}')
-        self.report_file.write(f'You had taken pictures of {self.count_result} objects.{self.two_empty_lines}')
-        self.report_file.write(f'Photographed:{self.one_empty_line}')
-        self.write_objects_list(self.report_file, self.list_view(self.singles_long))
-        if self.widget.count() > 0:
-            self.report_file.write(f'Additional images contain objects in sets:{self.one_empty_line}')
-            self.write_objects_list(self.report_file, self.list_view(self.sets_long))
-
-    def write_objects_list(self, file, func):
-        lines = file.writelines(func)
-        file.write(self.two_empty_lines)
-        return lines
-
-    def list_view(self, a_list):
-        return [(x + '\n') for x in a_list]
+            if self.sets_list:
+                file.write('Additional images contain objects in sets:\n')
+                file.writelines(list_view(self.sets_list))
+                file.write('\n')

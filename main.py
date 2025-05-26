@@ -3,7 +3,7 @@ from collections import defaultdict
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations
-from export_to_file import ExportToFile
+from export_to_file import ExportToFile, REPORT_DIR_NAME
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
 import os
@@ -52,7 +52,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.menuFile.triggered.connect(self.export_to_file)
         self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
         self.menuFile.triggered.connect(
-            lambda: self.show_popup(f"Your results was successfully exported to folder '{ExportToFile.report_dir_name}' in your images folder"))
+            lambda: self.show_popup(f"Your results was successfully exported to folder '{REPORT_DIR_NAME}' in your images folder"))
 
     def center_on_screen(self):
         geometry = self.frameGeometry()
@@ -182,7 +182,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             widget.insertItem(num, item)
 
     def export_to_file(self):
-        ExportToFile(self.directory_path, self.count_result, self.singles_long, self.sets_long, self.listWidgetSets)
+        exporter = ExportToFile(self.directory_path, self.count_result, self.singles_long, self.sets_long)
+        exporter.generate_report()
 
     def show_popup(self, text):
         msg = QMessageBox()
