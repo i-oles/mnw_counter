@@ -3,7 +3,7 @@ from collections import defaultdict
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
 from string_operations import StringOperations
-from export_to_file import ExportToFile, REPORT_DIR_NAME
+from file_exporter import FileExporter, REPORT_DIR_NAME
 from gui import Ui_MainWindow
 from about_widget import Ui_widget
 import os
@@ -182,7 +182,7 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
             widget.insertItem(num, item)
 
     def export_to_file(self):
-        exporter = ExportToFile(self.directory_path, self.count_result, self.singles_long, self.sets_long)
+        exporter = FileExporter(self.directory_path, self.count_result, self.singles_long, self.sets_long)
         exporter.generate_report()
 
     def show_popup(self, text):
