@@ -2,14 +2,14 @@ import re
 import os
 
 
-class MNWObjectListsProvider:
+class MNWProvider:
     def __init__(self, dir_path, file_ext):
         self.dir_path = dir_path
         self.file_ext = file_ext
         self.object_separator = ","
         self.mnw_prefix = "mnw"
 
-    def provide(self) -> (list, list):
+    def provide_objects_lists(self) -> (list, list):
         signatures = self.get_objects_signatures()
         signatures_single, signatures_set = separate_sets_and_singles(signatures)
 

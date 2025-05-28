@@ -2,10 +2,10 @@ from gc import get_objects
 from unittest import TestCase, mock
 from unittest.mock import patch
 
-from mnwobjectlistsprovider import separate_sets_and_singles, MNWObjectListsProvider
+from mnw_provider import separate_sets_and_singles, MNWProvider
 
 
-class TestMNWObjectListsProvider(TestCase):
+class TestMNWProvider(TestCase):
     @patch("os.walk")
     def test_get_objects_signatures(self, mock_os_walk):
         mock_os_walk.return_value = [
@@ -31,7 +31,7 @@ class TestMNWObjectListsProvider(TestCase):
             ])
         ]
 
-        mnw_objects_lists_provider = MNWObjectListsProvider("some/dir", "tif")
+        mnw_objects_lists_provider = MNWProvider("some/dir", "tif")
         got = mnw_objects_lists_provider.get_objects_signatures()
 
         want = sorted(['szm123_1', 'szm123_2', 'szm123_a-b', 'szm123_1-2'])

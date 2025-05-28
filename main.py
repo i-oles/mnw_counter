@@ -1,27 +1,11 @@
 from PyQt5 import QtWidgets, QtGui
-from collections import defaultdict
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDesktopWidget
 from PyQt5.QtCore import Qt
-
-from mnwobjectlistsprovider import MNWObjectListsProvider
-from string_operations import StringOperations
+from mnw_provider import MNWProvider
 from file_exporter import FileExporter, REPORT_DIR_NAME
 from gui import Ui_MainWindow
-from about_widget import Ui_widget
 import os
-import re
 import sys
-
-
-class Ui_AboutWindow(Ui_widget, QMainWindow):
-    def __init__(self, parent=None):
-        super(Ui_AboutWindow, self).__init__(parent)
-        self.setupUi(self)
-
-        about_app_description = QtGui.QPixmap()
-        about_app_description.load('about_IzzyCounter.png')
-        self.imageLabel.setPixmap(about_app_description)
-        self.verticalLayout.addWidget(self.imageLabel)
 
 
 class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
@@ -32,13 +16,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.center_on_screen()
 
-        self.component = 'mnw'
-        self.coma_char = ','
-        self.hyphen_char = '-'
         self.tiff_ext = 'tiff'
         self.jpg_ext = 'jpg'
-
-        self.second_window = Ui_AboutWindow(self)
 
         # default settings
         self.cBoxList.setChecked(True)
@@ -54,7 +33,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
         self.btnBrowse.clicked.connect(self.set_dir_path_in_lineEdit)
         self.btnCount.clicked.connect(self.when_btnCount_clicked)
         self.menuFile.triggered.connect(self.export_to_file)
-        self.menuAbout.triggered.connect(self.show_about_IzzyCounter)
         self.menuFile.triggered.connect(
             lambda: self.show_popup(
                 f"Your results was successfully exported to folder '{REPORT_DIR_NAME}' in your images folder"))
@@ -92,8 +70,8 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
                 self.when_all_cBox_unchecked(self.cBoxCount, self.cBoxList, self.show_popup,
                                              'Please choose display option!')
                 if self.dir_path_ok and (self.cBoxCount.isChecked() or self.cBoxList.isChecked()):
-                    provider = MNWObjectListsProvider(self.directory_path, self.file_ext)
-                    self.singles_long, self.sets_long = provider.provide()
+                    provider = MNWProvider(self.directory_path, self.file_ext)
+                    self.singles_long, self.sets_long = provider.provide_objects_lists()
                     self.counting_progress()
                     self.display_count_result()
                     self.display_item_lists()
@@ -144,9 +122,6 @@ class IzzyCounterWindow(Ui_MainWindow, QMainWindow):
     def allow_export_results(self):
         if self.listWidgetSingles.count() > 0 or len(self.labelResult.text()) > 0:
             self.exportResults.setDisabled(False)
-
-    def show_about_IzzyCounter(self):
-        self.second_window.show()
 
     def list_display(self, list, widget):
         for num, item in enumerate(list):
