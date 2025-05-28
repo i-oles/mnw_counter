@@ -3,5 +3,5 @@
 __pycache__/
 __MACOSX
 venv
-test_files/daily_reports
+resources/test_files/daily_reports
 

@@ -1,8 +1,7 @@
-from gc import get_objects
-from unittest import TestCase, mock
+from unittest import TestCase
 from unittest.mock import patch
 
-from mnw_provider import separate_sets_and_singles, MNWProvider
+from logic.mnw_provider import separate_sets_and_singles, MNWProvider
 
 
 class TestMNWProvider(TestCase):
