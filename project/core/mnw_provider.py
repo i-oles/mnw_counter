@@ -1,5 +1,5 @@
-import re
 import os
+import re
 
 
 class MNWProvider:
@@ -19,10 +19,10 @@ class MNWProvider:
     # filenames can contain two object signatures - that's why we split by given separator
     def get_objects_signatures(self) -> list[str]:
         signatures_with_prefix = []
-        search_pattern = rf'.*\(0?0?0?1\)\.{self.file_ext}?$'
+        search_pattern = rf".*\(0?0?0?1\)\.{self.file_ext}?$"
         for _, _, filenames in os.walk(self.dir_path):
             for filename in filenames:
-                if re.findall(r'{}'.format(search_pattern), filename):
+                if re.findall(rf"{search_pattern}", filename):
                     signatures_with_prefix += filename.split(self.object_separator)
 
         signatures = []
@@ -39,7 +39,7 @@ def separate_sets_and_singles(signatures: list[str]) -> (list[str], list[str]):
     signatures_set = []
 
     for signature in signatures:
-        if re.search(r'\d-\d', signature):
+        if re.search(r"\d-\d", signature):
             signatures_set.append(signature)
             signatures.remove(signature)
 

@@ -7,3 +7,7 @@ run: build
 
 test:
 	python3 -m pytest tests
+
+format:
+	ruff check . --fix
+	ruff format .
