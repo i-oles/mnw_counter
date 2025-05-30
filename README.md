@@ -1,9 +1,13 @@
 # Development & running
-run:  
-`make run`
+run:
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
+python3 -m project.main
+```
 # Testing
-
 ___
 run:  
 `make test`
@@ -12,13 +16,12 @@ ___
 testing files for *MNW Provider* are in resources/test_files
 
 in gui:
-
-- provide a sample files in dialog box
+- provide a sample files in dialog box 
 - choose tiff file extension and set display settings
 - click *count* button
-- you can export all results to *txt* file in two ways (report will be saved in resources/test_files/daily_reports):
-    - click file / 'Export results...'
-    - clicking 'ctrl+s'
+- you can export all results to *txt* file in two ways (report will be saved in test_files/daily_reports):  
+  - click file / 'Export results...'
+  - clicking 'ctrl+s'
 
 # About MNW Provider:
 
@@ -32,24 +35,24 @@ Each input filename has to fit to pattern (accepted in National Museum):
 > ***inventory_number + (ordinal number) + .file_extension***
 
 > ### note:
-> - no spaces included
+> - no spaces included  
 > - accepted filename characters: 0-9 A-Z a-z , - _ ! ( )
 > - each *inventory_number* has to include *mnw*
 > - accepted file extension: *tiff*, *tif* or *jpg*
 > - allowed *ordinal_number* --> (1), (01), (001), ...
 
 
-> ### examples:
+> ### examples:  
 > ___
 > input:
->   - abc123mnw(1).tiff
+>   - abc123mnw(1).tiff                     
 >   - abc123mnw(2).tiff
 >   - abc123mnw(3).tiff
 >
 > output
->   - abc123mnw
+>   - abc123mnw  
 >
->   counter: 1
+>   counter: 1   
 > ___
 >
 > input:
@@ -59,10 +62,10 @@ Each input filename has to fit to pattern (accepted in National Museum):
 >
 > output:
 >   - 123456mnw
->
+> 
 > counter: 1
 > ___
->
+> 
 > Program take in consideration also multi-part objects, which could be quite error prone:  
 > each part have it's own '(1)', but it is still one object and will be counted as 1.
 > ___
@@ -75,13 +78,13 @@ Each input filename has to fit to pattern (accepted in National Museum):
 >
 >       note:
 >       ...a-cmnw!a -> means it's an image of part 'a' from three-part object 'abc'.
->
+> 
 > output:
 >   - aaa222_a-c
->
+> 
 > counter:    1
 > ___
->
+> 
 > input:
 >   - zzz0345_1-2mnw(01).tiff
 >   - zzz0345_1-2mnw(02).tiff
@@ -94,7 +97,7 @@ Each input filename has to fit to pattern (accepted in National Museum):
 > output:
 >   - zzz0345_1mnw
 >   - zzz0345_2mnw
->
+>            
 > counter:    2
 >
 >       note:
@@ -103,7 +106,7 @@ Each input filename has to fit to pattern (accepted in National Museum):
 >            In special section there will be displayed that there is image of set (which is obligatory).
 >            Beside set there are always images of particular parts of set which will be counted.
 > ___
->
+> 
 > Sometimes two objects has to be photographed together.  
 > Then pattern is:
 >
@@ -113,7 +116,7 @@ Each input filename has to fit to pattern (accepted in National Museum):
 > input:
 >   - bas003_1mnw,mad008_1mnw(1).tif
 >   - bas003_1mnw,mad008_1mnw(2).tif
->
+>            
 > output:
 >   - bas003_1mnw
 >   - mad008_1mnw
