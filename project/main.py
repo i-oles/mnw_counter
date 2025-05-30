@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QApplication
 import sys
-from gui.main_window import MainWindow
+from project.windows.main_window import MainWindow
 
 
-def main():
+def main() -> None:
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

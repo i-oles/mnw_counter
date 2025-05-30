@@ -3,13 +3,13 @@ import os
 
 
 class MNWProvider:
-    def __init__(self, dir_path, file_ext):
+    def __init__(self, dir_path: str, file_ext: str) -> None:
         self.dir_path = dir_path
         self.file_ext = file_ext
         self.object_separator = ","
         self.mnw_prefix = "mnw"
 
-    def provide_objects_lists(self) -> (list, list):
+    def provide_objects_lists(self) -> (list[str], list[str]):
         signatures = self.get_objects_signatures()
         signatures_single, signatures_set = separate_sets_and_singles(signatures)
 
@@ -17,7 +17,7 @@ class MNWProvider:
 
     # get all unique signatures from filenames ended with '(1)' from provided directory
     # filenames can contain two object signatures - that's why we split by given separator
-    def get_objects_signatures(self):
+    def get_objects_signatures(self) -> list[str]:
         signatures_with_prefix = []
         search_pattern = rf'.*\(0?0?0?1\)\.{self.file_ext}?$'
         for _, _, filenames in os.walk(self.dir_path):
@@ -35,7 +35,7 @@ class MNWProvider:
         return sorted(set(signatures))
 
 
-def separate_sets_and_singles(signatures: list) -> (list, list):
+def separate_sets_and_singles(signatures: list[str]) -> (list[str], list[str]):
     signatures_set = []
 
     for signature in signatures:
