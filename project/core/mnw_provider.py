@@ -16,7 +16,7 @@ class MNWProvider:
         return signatures_single, signatures_set
 
     # get all unique signatures from filenames ended with '(1)' from provided directory
-    # filenames can contain two object signatures - that's why we split by given separator
+    # filenames can contain two object signatures - it's needed to split by separator
     def get_objects_signatures(self) -> list[str]:
         signatures_with_prefix = []
         search_pattern = rf".*\(0?0?0?1\)\.{self.file_ext}?$"
