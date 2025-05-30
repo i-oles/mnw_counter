@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from project.core import separate_sets_and_singles, MNWProvider
+from project.core.mnw_provider import separate_sets_and_singles, MNWProvider
 
 
 class TestMNWProvider(TestCase):
