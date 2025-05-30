@@ -10,7 +10,7 @@ python3 -m project.main
 # Testing
 ___
 run:  
-`make test`
+`python3 -m pytest tests`
 ___
 
 testing files for *MNW Provider* are in resources/test_files
