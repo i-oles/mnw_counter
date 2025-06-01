@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDesktopWidget, QFileDialog, QMainWindow, QMessageBox
 
-from project.core.file_exporter import REPORT_DIR_NAME, FileExporter
+from project.core.file_exporter import REPORT_DIR_NAME, DailyReportFileExporter
 from project.core.mnw_provider import MNWProvider
 from project.ui.ui_main_window import Ui_MainWindow
 
@@ -96,7 +96,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.exportResults.setDisabled(False)
 
     def export_results(self) -> None:
-        exporter = FileExporter(
+        exporter = DailyReportFileExporter(
             self.lineEdit.text(),
             self.labelResult.text(),
             self.signatures_single,

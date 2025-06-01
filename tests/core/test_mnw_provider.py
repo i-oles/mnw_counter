@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from project.core.mnw_provider import MNWProvider, separate_sets_and_singles
+from project.core.mnw_provider import get_objects_signatures, separate_sets_and_singles
 
 
 @patch("os.walk")
@@ -32,8 +32,7 @@ def test_get_objects_signatures(mock_os_walk):
         )
     ]
 
-    provider = MNWProvider("some/dir", "tif")
-    got = provider.get_objects_signatures()
+    got = get_objects_signatures("some/dir", "tif", ",", "mnw")
 
     want = sorted(["szm123_1", "szm123_2", "szm123_a-b", "szm123_1-2"])
     assert got == want
